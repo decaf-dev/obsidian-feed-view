@@ -31,6 +31,7 @@ import type FeedViewPlugin from "../main";
 import Feed from "../svelte/Feed.svelte";
 import { FeedState, type CardView, type FeedActions } from "../svelte/feedState.svelte";
 import { BodyController } from "./bodies/BodyController";
+import { confirmThreadDeletion } from "./ConfirmDeleteModal";
 import { findBaseKey, FoldStore, foldStorageKey } from "./foldStore";
 import { LineCounter } from "./lineCounts";
 import { buildPropertyRows, setCheckbox } from "./properties";
@@ -281,27 +282,62 @@ export class FeedBasesView extends BasesView implements HoverParent {
 		return this.notes.get(path)?.file ?? this.app.vault.getFileByPath(path);
 	}
 
+	/**
+	 * Deletes a note and every reply under it, so deleting a thread leaves no
+	 * orphaned replies behind. Files go to the trash the user's "Deleted files"
+	 * setting picks.
+	 */
+	private async deleteWithReplies(file: TFile) {
+		const replies = this.plugin.replyIndex.repliesOf(file.path).flatMap((path) => {
+			const reply = this.app.vault.getFileByPath(path);
+			return reply ? [reply] : [];
+		});
+		if (replies.length === 0) {
+			// Obsidian's own flow: asks first only if "Confirm file deletion" is on
+			await this.app.fileManager.promptForDeletion(file);
+			return;
+		}
+
+		const title = this.notes.get(file.path)?.title ?? file.basename;
+		if (!(await confirmThreadDeletion(this.app, title, replies.length))) return;
+
+		// deepest replies first and the note itself last, so nothing is briefly orphaned
+		let failed = 0;
+		for (const target of [...replies.reverse(), file]) {
+			try {
+				await this.app.fileManager.trashFile(target);
+			} catch (error) {
+				failed++;
+				console.error(`[feed-view] Could not delete ${target.path}`, error);
+			}
+		}
+		if (failed > 0) new Notice(`Could not delete ${failed === 1 ? "1 note" : `${failed} notes`} in the thread.`);
+	}
+
 	private showMenu(path: string, rootPath: string, anchorEl: HTMLElement) {
 		const file = this.noteFile(path);
 		if (!file) return;
 		const menu = new Menu();
 		menu.addItem((item) =>
 			item
-				.setTitle("Read aloud")
-				.setIcon("volume-2")
-				.onClick(() => new Notice(NOT_IMPLEMENTED_MESSAGE))
-		);
-		menu.addItem((item) =>
-			item
 				.setTitle("Reply")
 				.setIcon("reply")
 				.onClick(() => this.actions.reply(rootPath))
 		);
+		menu.addSeparator();
 		menu.addItem((item) =>
 			item
-				.setTitle("Open as note")
-				.setIcon("external-link")
-				.onClick(() => void this.app.workspace.getLeaf("tab").openFile(file))
+				.setTitle("Read aloud")
+				.setIcon("volume-2")
+				.onClick(() => new Notice(NOT_IMPLEMENTED_MESSAGE))
+		);
+		menu.addSeparator();
+		menu.addItem((item) =>
+			item
+				.setTitle("Delete")
+				.setIcon("trash-2")
+				.setWarning(true)
+				.onClick(() => void this.deleteWithReplies(file))
 		);
 		menu.onHide(() => {
 			if (this.feed.menuOpenFor === path) this.feed.menuOpenFor = null;

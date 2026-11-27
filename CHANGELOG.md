@@ -19,7 +19,7 @@ The starter template is now **Feed View**, a Feed layout for Obsidian Bases.
 -   Feeds open in tabs are rebuilt when the plugin is disabled, reloaded or re-enabled, so they never keep running old code
 -   Day headings (TODAY, YESTERDAY, weekday and date), using created time or a **Date property** view option
 -   The Base's visible properties on each card, with toggleable checkboxes and pills for lists and tags
--   A ⋯ menu with **Read aloud** (not implemented yet; shows a notice), **Reply** and **Open as note**
+-   A ⋯ menu with **Reply**, **Read aloud** (not implemented yet; shows a notice) and **Delete** (moves the note and all its replies to the trash; asks first when there are replies, otherwise only if Obsidian's "Confirm file deletion" is on)
 -   A virtualized feed (`@humanspeak/svelte-virtual-list`), so only nearby cards and editors exist and large Bases stay fast
 -   Unit tests for the feed's pure logic (`bun run test`)
 -   `dist/styles.css` built from `src/styles.css` and component styles

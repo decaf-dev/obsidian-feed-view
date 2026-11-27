@@ -65,7 +65,7 @@ The bar above the first card holds the feed's own controls:
 
 -   **Chevron** (left of the title): fold or unfold the card. A folded card shows only its title row and "N lines hidden" (non-blank lines of the body).
 -   **Title**: opens the note. ⌘/Ctrl-click or middle-click opens it in a new tab.
--   **⋯** (right of the title, on hover): **Read aloud**, **Reply**, **Open as note** (opens it in a new tab).
+-   **⋯** (right of the title, on hover): **Reply**, **Read aloud**, **Delete** (moves the note and all its replies to the trash; asks first when there are replies, otherwise only if "Confirm file deletion" is on).
 -   **Reply** (bottom-left, on hover): creates a reply and puts your cursor in it.
 
 Your fold state is remembered for each note, separately in each view, on this device.
