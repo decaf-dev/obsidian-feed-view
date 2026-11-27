@@ -5,6 +5,36 @@ All notable changes to this project are documented in this file, newest first.
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Entries are grouped by date rather than by version.
 
+## 2026-11-27
+
+The starter template is now **Feed View**, a Feed layout for Obsidian Bases.
+
+### Added
+
+-   A **Feed** layout for Bases (newspaper icon): every note the Base returns as a card in one scrolling column, with Sort and Filter from the Base toolbar
+-   Card bodies edited in place with Obsidian's Live Preview editor. Edits save to the note, and outside edits merge into the card
+-   A feed bar with **Live preview | Reading**, **Full width / Fixed width** and **Collapse all / Expand all**. Mode and width are saved with the view (`feedMode`, `feedWidth`)
+-   Folding single cards ("N lines hidden"), with fold state kept per note and per view on this device
+-   Replies: **Reply** immediately creates an `Untitled` note in the parent's folder with `reply: "[[Parent]]"`, scrolls to its card and focuses its Live Preview editor. Replies show as indented cards joined by a curved line, are found anywhere in the vault, and stay one level deep
+-   Feeds open in tabs are rebuilt when the plugin is disabled, reloaded or re-enabled, so they never keep running old code
+-   Day headings (TODAY, YESTERDAY, weekday and date), using created time or a **Date property** view option
+-   The Base's visible properties on each card, with toggleable checkboxes and pills for lists and tags
+-   A ⋯ menu with **Read aloud** (not implemented yet; shows a notice), **Reply** and **Open as note**
+-   A virtualized feed (`@humanspeak/svelte-virtual-list`), so only nearby cards and editors exist and large Bases stay fast
+-   Unit tests for the feed's pure logic (`bun run test`)
+-   `dist/styles.css` built from `src/styles.css` and component styles
+
+### Changed
+
+-   Plugin id `feed-view`, name "Feed View", author DecafDev, version 0.1.0, `minAppVersion` 1.15.1
+-   License changed to MIT, © DecafDev
+-   README rewritten for the plugin
+-   esbuild resolves Svelte packages through the `svelte` export condition, and skips compiler warnings from `node_modules`
+
+### Removed
+
+-   The sample plugin code (ribbon icon, status bar, sample modal, sample settings tab)
+
 ## 2026-11-22
 
 ### Changed
