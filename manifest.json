@@ -1,9 +1,9 @@
 {
 	"id": "feed-view",
 	"name": "Feed View",
-	"version": "1.0.0",
+	"version": "0.1.0",
 	"minAppVersion": "1.15.1",
-	"description": "Adds a Feed layout to Bases: read and edit every note in one scrolling column, grouped by day and threaded with replies.",
+	"description": "Read and edit your notes as a feed in Bases.",
 	"author": "DecafDev",
 	"isDesktopOnly": false
 }

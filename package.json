@@ -1,7 +1,7 @@
 {
 	"name": "obsidian-feed-view",
-	"version": "1.0.0",
-	"description": "A Feed layout for Obsidian Bases: read and edit every note in one scrolling column, grouped by day and threaded with replies.",
+	"version": "0.1.0",
+	"description": "A Feed layout for Obsidian Bases.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",

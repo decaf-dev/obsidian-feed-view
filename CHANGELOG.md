@@ -26,7 +26,7 @@ The starter template is now **Feed View**, a Feed layout for Obsidian Bases.
 
 ### Changed
 
--   Plugin id `feed-view`, name "Feed View", author DecafDev, `minAppVersion` 1.15.1
+-   Plugin id `feed-view`, name "Feed View", author DecafDev, version 0.1.0, `minAppVersion` 1.15.1
 -   License changed to MIT, © DecafDev
 -   README rewritten for the plugin
 -   esbuild resolves Svelte packages through the `svelte` export condition, and skips compiler warnings from `node_modules`

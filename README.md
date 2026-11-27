@@ -248,8 +248,8 @@ First, give the workflow permission to create releases:
 Then tag a version that matches `manifest.json` and push it:
 
 ```bash
-git tag 1.0.0
-git push origin 1.0.0
+git tag 0.1.0
+git push origin 0.1.0
 ```
 
 ---
