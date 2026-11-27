@@ -1,7 +1,7 @@
 {
 	"id": "feed-view",
 	"name": "Feed View",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"minAppVersion": "1.15.1",
 	"description": "Adds a feed view to Bases.",
 	"author": "DecafDev",
