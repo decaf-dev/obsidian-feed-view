@@ -88,7 +88,12 @@ export class FeedBasesView extends BasesView implements HoverParent {
 		// every feed opens in the default mode; switching lasts until it's closed
 		this.feed.mode = this.plugin.settings.defaultMode;
 
-		const bodies = new BodyController(this.app, (path) => this.app.vault.getFileByPath(path), this.feed.mode);
+		const bodies = new BodyController(
+			this.app,
+			(path) => this.app.vault.getFileByPath(path),
+			this.feed.mode,
+			this
+		);
 		this.bodies = this.addChild(bodies);
 		this.feed.liveAvailable = bodies.liveAvailable;
 		if (!this.feed.liveAvailable) this.feed.mode = "reading";

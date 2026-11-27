@@ -1,9 +1,23 @@
-import { Component, getFrontMatterInfo, MarkdownRenderer, type App, type TFile } from "obsidian";
+import {
+	Component,
+	getFrontMatterInfo,
+	Keymap,
+	MarkdownRenderer,
+	Menu,
+	type App,
+	type HoverParent,
+	type TFile,
+} from "obsidian";
+import { FEED_VIEW_TYPE } from "../../constants";
+import { openTagSearch } from "../internal/search";
 
 /**
  * A read-only card body rendered like Obsidian's Reading view (R4). Also the
  * fallback when the live editor can't be created. Frontmatter is left out:
  * it's shown as properties instead (R10). Re-renders when the note changes.
+ *
+ * `MarkdownRenderer.render` only draws the HTML. Obsidian's own Reading view
+ * wires up link and tag clicks separately, so this body does the same.
  */
 export class ReadingBody extends Component {
 	private renderChild: Component | null = null;
@@ -14,12 +28,71 @@ export class ReadingBody extends Component {
 	constructor(
 		private readonly app: App,
 		private readonly file: TFile,
-		hostEl: HTMLElement
+		hostEl: HTMLElement,
+		private readonly hoverParent: HoverParent
 	) {
 		super();
 		this.contentEl = hostEl.createDiv({
 			cls: "feed-view-reading markdown-preview-view markdown-rendered",
 		});
+		this.registerLinkEvents();
+	}
+
+	/** Opens links and tags the way Obsidian's Reading view does. */
+	private registerLinkEvents() {
+		const el = this.contentEl;
+		const sourcePath = this.file.path;
+		const { workspace } = this.app;
+
+		const openLink = (evt: MouseEvent, linkEl: HTMLElement) => {
+			if (evt.button !== 0 && evt.button !== 1) return;
+			const href = this.ownHref(evt, linkEl);
+			if (href === null) return;
+			evt.preventDefault();
+			void workspace.openLinkText(href, sourcePath, Keymap.isModEvent(evt));
+		};
+		el.on("click", "a.internal-link", openLink);
+		el.on("auxclick", "a.internal-link", openLink);
+
+		el.on("contextmenu", "a.internal-link", (evt, linkEl) => {
+			const href = this.ownHref(evt, linkEl);
+			if (href === null) return;
+			const menu = new Menu();
+			if (workspace.handleLinkContextMenu(menu, href, sourcePath)) {
+				evt.preventDefault();
+				menu.showAtMouseEvent(evt);
+			}
+		});
+
+		el.on("mouseover", "a.internal-link", (evt, linkEl) => {
+			const href = this.ownHref(evt, linkEl);
+			if (href === null) return;
+			workspace.trigger("hover-link", {
+				event: evt,
+				source: FEED_VIEW_TYPE,
+				hoverParent: this.hoverParent,
+				targetEl: linkEl,
+				linktext: href,
+				sourcePath,
+			});
+		});
+
+		el.on("click", "a.tag", (evt, tagEl) => {
+			if (evt.button !== 0 || evt.defaultPrevented || !this.ownsElement(tagEl)) return;
+			evt.preventDefault();
+			openTagSearch(this.app, tagEl.getText());
+		});
+	}
+
+	/** The link's target, or null when a `![[note]]` embed inside this body handles it. */
+	private ownHref(evt: MouseEvent, linkEl: HTMLElement): string | null {
+		if (evt.defaultPrevented || !this.ownsElement(linkEl)) return null;
+		return linkEl.getAttr("data-href") || linkEl.getAttr("href") || null;
+	}
+
+	/** False inside a `![[note]]` embed, which wires up its own links. */
+	private ownsElement(target: HTMLElement): boolean {
+		return target.closest(".markdown-preview-view") === this.contentEl;
 	}
 
 	onload() {

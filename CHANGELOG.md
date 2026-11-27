@@ -51,6 +51,7 @@ The starter template is now **Feed View**, a Feed layout for Obsidian Bases.
 
 -   A reload is only reported as successful when the Obsidian CLI prints `Reloaded:`. Previously any output that wasn't a known error, including none at all, counted as success
 -   Reload errors written to stderr are now shown
+-   In Reading mode, tags and internal links in a card's body now work. Clicking a tag opens Search for it, and links open, show their hover preview and have the usual right-click menu, as in Obsidian's Reading view
 
 ### Removed
 
