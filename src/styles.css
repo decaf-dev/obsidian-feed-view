@@ -92,6 +92,11 @@
 	max-width: none;
 }
 
+/* A percentage of the row, so 100% matches full width (both keep the 24px margins). */
+.feed-view.is-custom-width .feed-view-column {
+	max-width: var(--feed-view-custom-width, 100%);
+}
+
 .feed-view-bar-row {
 	padding-top: 20px;
 }

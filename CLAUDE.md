@@ -12,7 +12,7 @@ Put each new piece of state in one of these places:
 | State | Where | Code |
 | --- | --- | --- |
 | Per Base or per view (fold state, Live preview / Reading mode) | the vault's local storage, via `app.loadLocalStorage` / `app.saveLocalStorage`, keyed by Base and view name | `src/obsidian/settingsStore.ts`, `src/obsidian/foldStore.ts` |
-| Plugin-wide (full width, day headings, replies, show time) | the plugin's `data.json`, shown in the settings tab | `src/settings.ts` |
+| Plugin-wide (width, day headings, show replies, reply buttons, show timestamp) | the plugin's `data.json`, shown in the settings tab | `src/settings.ts` |
 | Reply links | the reply note's frontmatter (`reply`) | `src/obsidian/replies.ts` |
 
 When adding a per-view setting, add it to `ViewSettings` in `src/model/viewSettings.ts`.

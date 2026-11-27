@@ -74,7 +74,7 @@
 				{#if folded && hiddenLines !== undefined}
 					<span class="feed-view-hidden-lines">{hiddenLinesLabel(hiddenLines)}</span>
 				{/if}
-				{#if feed.showTime}
+				{#if feed.showTimestamp}
 					<time
 						class="feed-view-card-time"
 						datetime={new Date(card.createdMs).toISOString()}
@@ -97,7 +97,7 @@
 						<PropertyList {card} {actions} />
 					{/if}
 					<CardBody path={card.path} {actions} />
-					{#if feed.replies}
+					{#if feed.replyButtons}
 						<div class="feed-view-card-actions">
 							<button
 								type="button"

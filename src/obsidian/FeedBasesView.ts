@@ -59,6 +59,8 @@ export class FeedBasesView extends BasesView implements HoverParent {
 	private threads: Thread<CardNote>[] = [];
 	/** Whether to group cards under day headings (a plugin setting). */
 	private dayHeadings = true;
+	/** Whether to show replies under their notes (a plugin setting). */
+	private showReplies = true;
 	private notes = new Map<string, CardNote>();
 	private foldStore: FoldStore | null = null;
 	private settingsStore: SettingsStore | null = null;
@@ -169,9 +171,10 @@ export class FeedBasesView extends BasesView implements HoverParent {
 
 		this.threads = buildThreads<CardNote>({
 			entries: notes,
+			// replies stay off the top level either way; with Show replies off they're hidden
 			rootOf: (path) => replyIndex.rootOf(path),
 			repliesOf: (rootPath) =>
-				replyIndex.repliesOf(rootPath).flatMap((path) => {
+				(this.showReplies ? replyIndex.repliesOf(rootPath) : []).flatMap((path) => {
 					const file = this.app.vault.getFileByPath(path);
 					return file ? [toCardNote(file, entryByPath.get(path) ?? null)] : [];
 				}),
@@ -223,7 +226,7 @@ export class FeedBasesView extends BasesView implements HoverParent {
 	 */
 	private async createReplyAndFocus(rootPath: string) {
 		const parent = this.noteFile(rootPath);
-		if (!parent || this.replyInFlight || !this.feed.replies) return;
+		if (!parent || this.replyInFlight || !this.feed.replyButtons) return;
 		this.replyInFlight = true;
 		try {
 			// leave the card being typed in (its typing is saved); focus moves to the new reply
@@ -249,9 +252,16 @@ export class FeedBasesView extends BasesView implements HoverParent {
 
 	/** Applies the plugin-wide settings; called on load and whenever they change. */
 	applySettings(settings: FeedViewSettings) {
-		this.feed.fullWidth = settings.fullWidth;
-		this.feed.replies = settings.replies;
-		this.feed.showTime = settings.showTime;
+		this.feed.width = settings.width;
+		this.feed.customWidth = settings.customWidth;
+		// a new reply would never appear while replies are hidden
+		this.feed.replyButtons = settings.showReplies && settings.replyButtons;
+		this.feed.showTimestamp = settings.showTimestamp;
+		if (settings.showReplies !== this.showReplies) {
+			this.showReplies = settings.showReplies;
+			// the threads themselves change, so rebuild them from the Base results
+			this.scheduleRender();
+		}
 		if (settings.dayHeadings !== this.dayHeadings) {
 			this.dayHeadings = settings.dayHeadings;
 			this.updateRows();
@@ -331,7 +341,7 @@ export class FeedBasesView extends BasesView implements HoverParent {
 		const file = this.noteFile(path);
 		if (!file) return;
 		const menu = new Menu();
-		if (this.feed.replies) {
+		if (this.feed.replyButtons) {
 			menu.addItem((item) =>
 				item
 					.setTitle("Reply")
