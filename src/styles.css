@@ -350,7 +350,7 @@
 	padding: 4px 6px;
 	border-radius: 5px;
 	font-size: 13px;
-	color: var(--text-muted);
+	color: var(--text-faint);
 }
 
 .feed-view .feed-view-reply-button .feed-view-icon svg {

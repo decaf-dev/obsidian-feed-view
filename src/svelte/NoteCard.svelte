@@ -28,6 +28,12 @@
 		evt.preventDefault();
 		actions.openNote(card.path, evt);
 	}
+
+	function onTitleContextMenu(evt: MouseEvent) {
+		evt.preventDefault();
+		evt.stopPropagation();
+		actions.showNoteMenu(card.path, evt);
+	}
 </script>
 
 <div class="feed-view-row feed-view-card-row" class:is-reply={isReply} class:is-after-heading={row.afterHeading}>
@@ -60,6 +66,7 @@
 						data-href={card.path}
 						onclick={onTitleClick}
 						onauxclick={onTitleAuxClick}
+						oncontextmenu={onTitleContextMenu}
 						onmouseover={(evt) => actions.hoverNote(card.path, evt, evt.currentTarget)}>{card.title}</a
 					>
 				</h2>
