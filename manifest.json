@@ -1,11 +1,9 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
+	"id": "feed-view",
+	"name": "Feed View",
 	"version": "1.0.0",
-	"minAppVersion": "1.0.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"minAppVersion": "1.15.1",
+	"description": "Adds a Feed layout to Bases: read and edit every note in one scrolling column, grouped by day and threaded with replies.",
+	"author": "DecafDev",
 	"isDesktopOnly": false
 }

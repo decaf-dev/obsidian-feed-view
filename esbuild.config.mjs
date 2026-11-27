@@ -29,6 +29,17 @@ const rebuildPlugin = {
 				);
 			} catch (err) {}
 
+			// esbuild names the CSS bundle after the entry point (main.css);
+			// Obsidian loads styles.css
+			try {
+				await fs.promises.rename(
+					path.join(path.resolve(), "dist", "main.css"),
+					path.join(path.resolve(), "dist", "styles.css")
+				);
+			} catch (err) {
+				if (err.code !== "ENOENT") throw err;
+			}
+
 			// the manifest has to be in place before Obsidian re-reads it
 			await reloadPlugin();
 		});
@@ -41,6 +52,10 @@ const context = await esbuild.context({
 	},
 	entryPoints: ["src/main.ts"],
 	bundle: true,
+	// Svelte component libraries (e.g. @humanspeak/svelte-virtual-list) only
+	// export their source under the "svelte" condition
+	conditions: ["svelte", "browser", prod ? "production" : "development"],
+	mainFields: ["svelte", "browser", "module", "main"],
 	external: [
 		"obsidian",
 		"electron",
@@ -68,9 +83,12 @@ const context = await esbuild.context({
 		rebuildPlugin,
 		esbuildSvelte({
 			compilerOptions: {
-				css: "injected",
+				// component styles are bundled into dist/styles.css
+				css: "external",
 			},
 			preprocess: sveltePreprocess(),
+			// compiler warnings in third-party components aren't actionable here
+			filterWarnings: (warning) => !warning.filename?.includes("node_modules"),
 		}),
 	],
 });
