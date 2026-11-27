@@ -26,7 +26,7 @@
 	});
 </script>
 
-<div class="feed-view" class:is-full-width={feed.width === "full"}>
+<div class="feed-view" class:is-full-width={feed.fullWidth}>
 	<SvelteVirtualList
 		bind:this={list}
 		items={feed.rows}

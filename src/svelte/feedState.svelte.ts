@@ -1,5 +1,5 @@
 import type { BasesPropertyId, Value } from "obsidian";
-import { DEFAULT_MODE, DEFAULT_WIDTH, type FeedMode, type FeedWidth } from "../constants";
+import { DEFAULT_MODE, type FeedMode } from "../constants";
 import { anyExpanded } from "../model/folds";
 import type { FeedRow } from "../model/types";
 import type { PropertyRow } from "../obsidian/properties";
@@ -22,7 +22,8 @@ export class FeedState {
 	/* eslint-enable svelte/prefer-svelte-reactivity -- end of the immutable collections */
 
 	mode = $state<FeedMode>(DEFAULT_MODE);
-	width = $state<FeedWidth>(DEFAULT_WIDTH);
+	/** Span the view instead of the readable line length (a plugin setting). */
+	fullWidth = $state(false);
 	/** False when this Obsidian version lacks the internals for the live editor. */
 	liveAvailable = $state(true);
 	/** True once the first data update has been rendered. */
@@ -39,7 +40,6 @@ export class FeedState {
 /** Callbacks from the Svelte components into the Bases view. */
 export interface FeedActions {
 	setMode(mode: FeedMode): void;
-	toggleWidth(): void;
 	toggleFold(path: string): void;
 	toggleAll(): void;
 	openNote(path: string, evt: MouseEvent): void;

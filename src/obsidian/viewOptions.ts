@@ -2,8 +2,9 @@ import type { BasesAllOptions, BasesPropertyId } from "obsidian";
 import { CONFIG_DATE_PROPERTY } from "../constants";
 
 /**
- * Options shown in the view's configuration menu. Live preview / Reading and
- * the width live in the feed bar instead (R4, R7), so they aren't repeated here.
+ * Options shown in the view's configuration menu. Live preview / Reading lives
+ * in the feed bar (R4) and the width in the plugin's settings, so they aren't
+ * repeated here.
  */
 export function feedViewOptions(): BasesAllOptions[] {
 	return [
