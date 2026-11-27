@@ -1,4 +1,4 @@
-import { Component, Notice, type App, type TFile } from "obsidian";
+import { Component, Notice, type App, type HoverParent, type TFile } from "obsidian";
 import type { FeedMode } from "../../constants";
 import { isEmbeddedEditorAvailable, mountEmbeddedEditor, type EmbeddedEditor } from "../internal/embeddedEditor";
 import { ReadingBody } from "./ReadingBody";
@@ -32,7 +32,9 @@ export class BodyController extends Component {
 	constructor(
 		private readonly app: App,
 		private readonly resolveFile: (path: string) => TFile | null,
-		mode: FeedMode
+		mode: FeedMode,
+		/** Where hover previews of links in Reading mode cards open from. */
+		private readonly hoverParent: HoverParent
 	) {
 		super();
 		this.mode = mode;
@@ -147,7 +149,7 @@ export class BodyController extends Component {
 		}
 
 		if (generation !== slot.generation || !this.slots.has(slot.hostEl)) return;
-		const body = new ReadingBody(this.app, file, slot.hostEl);
+		const body = new ReadingBody(this.app, file, slot.hostEl, this.hoverParent);
 		this.addChild(body);
 		slot.mounted = { kind: "reading", body };
 	}
