@@ -33,6 +33,8 @@ export class FeedState {
 	replyButtons = $state(true);
 	/** Show each note's created time on its card (a plugin setting). */
 	showTimestamp = $state(true);
+	/** Show the properties enabled in the Base's Properties menu on each card (a plugin setting). */
+	showFrontmatter = $state(true);
 	/** False when this Obsidian version lacks the internals for the live editor. */
 	liveAvailable = $state(true);
 	/** True once the first data update has been rendered. */

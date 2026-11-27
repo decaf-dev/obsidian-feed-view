@@ -34,6 +34,11 @@ export interface FeedViewSettings {
 	replyButtons: boolean;
 	/** Show the time each note was created on its card. */
 	showTimestamp: boolean;
+	/**
+	 * Show the note's properties on its card. Only the properties enabled in
+	 * the Base's Properties menu are shown either way.
+	 */
+	showFrontmatter: boolean;
 }
 
 export const DEFAULT_SETTINGS: FeedViewSettings = {
@@ -44,6 +49,7 @@ export const DEFAULT_SETTINGS: FeedViewSettings = {
 	showReplies: true,
 	replyButtons: true,
 	showTimestamp: true,
+	showFrontmatter: true,
 };
 
 /** Fills in defaults and corrects stored values that are out of range or unknown. */
@@ -98,6 +104,11 @@ export class FeedViewSettingTab extends PluginSettingTab {
 						name: "Show timestamp",
 						desc: "Show the time each note was created on its card.",
 						control: { type: "toggle", key: "showTimestamp", defaultValue: DEFAULT_SETTINGS.showTimestamp },
+					},
+					{
+						name: "Show frontmatter",
+						desc: "Show each note's properties on its card. You still need to turn on the properties you want in the Base's Properties menu.",
+						control: { type: "toggle", key: "showFrontmatter", defaultValue: DEFAULT_SETTINGS.showFrontmatter },
 					},
 				],
 			},

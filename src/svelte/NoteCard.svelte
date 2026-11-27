@@ -93,7 +93,7 @@
 			</div>
 			{#if !folded}
 				<div class="feed-view-card-content">
-					{#if card.properties.length > 0}
+					{#if feed.showFrontmatter && card.properties.length > 0}
 						<PropertyList {card} {actions} />
 					{/if}
 					<CardBody path={card.path} {actions} />
