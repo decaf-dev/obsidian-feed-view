@@ -32,6 +32,12 @@
 	class:is-custom-width={feed.width === "custom"}
 	style:--feed-view-custom-width={feed.width === "custom" ? `${feed.customWidth}%` : null}
 >
+	<!-- outside the list so it stays put while the cards scroll -->
+	<div class="feed-view-row feed-view-bar-row">
+		<div class="feed-view-column">
+			<FeedBar {feed} {actions} />
+		</div>
+	</div>
 	<SvelteVirtualList
 		bind:this={list}
 		items={feed.rows}
@@ -45,11 +51,6 @@
 		viewportLabel=""
 	>
 		{#snippet header()}
-			<div class="feed-view-row feed-view-bar-row">
-				<div class="feed-view-column">
-					<FeedBar {feed} {actions} />
-				</div>
-			</div>
 			{#if feed.loaded && feed.rows.length === 0}
 				<div class="feed-view-row">
 					<div class="feed-view-column feed-view-empty">No notes to show.</div>
