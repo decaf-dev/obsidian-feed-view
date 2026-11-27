@@ -40,6 +40,8 @@ The starter template is now **Feed View**, a Feed layout for Obsidian Bases.
 -   Node.js 22 or newer is now listed as required rather than recommended
 -   The README symlink step now says to link the main checkout's `dist/`, never a worktree's
 -   ESLint now ignores `.worktrees/`
+-   The Live preview / Reading mode is now kept in the vault's local storage, per view and on this device only, instead of in the `.base` file (`feedMode` is no longer written)
+-   Day headings always use the note's created time. The **Date property** view option is gone, and `dateProperty` in a `.base` file is ignored
 
 ### Fixed
 

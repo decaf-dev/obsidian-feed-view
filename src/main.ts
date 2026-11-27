@@ -4,7 +4,6 @@ import { FeedBasesView } from "./obsidian/FeedBasesView";
 import { findLeafContaining } from "./obsidian/foldStore";
 import { rebuildLeaf, rebuildRememberedLeaves, rememberLeavesToRebuild } from "./obsidian/internal/workspace";
 import { ReplyIndex } from "./obsidian/ReplyIndex";
-import { feedViewOptions } from "./obsidian/viewOptions";
 import { DEFAULT_SETTINGS, FeedViewSettingTab, type FeedViewSettings } from "./settings";
 import "./styles.css";
 
@@ -28,7 +27,6 @@ export default class FeedViewPlugin extends Plugin {
 			name: "Feed",
 			icon: "lucide-newspaper",
 			factory: (controller, containerEl) => new FeedBasesView(controller, containerEl, this),
-			options: feedViewOptions,
 		});
 		if (!registered) {
 			console.warn("[feed-view] Bases is turned off in this vault, so the Feed layout isn't available.");

@@ -57,7 +57,7 @@ The bar above the first card holds the feed's own controls:
 
 | Control | What it does |
 | --- | --- |
-| **Live preview \| Reading** | Edit every card in place, or show every card read-only. Saved with the view. |
+| **Live preview \| Reading** | Edit every card in place, or show every card read-only. Remembered for this view on this device. |
 | **Collapse all / Expand all** | Fold or unfold every card, replies included. Reads **Expand all** once every card is folded. |
 
 ### Cards
@@ -85,7 +85,7 @@ Like any new note in Obsidian, a reply you don't type anything into stays as an 
 
 ### Day headings and order
 
-Cards are filed under the day of the note's **created time**. To use a date property instead, open the view's options (_Configure view_) and set **Date property**.
+Cards are filed under the day of the note's **created time**, as Obsidian reports it for the file.
 
 If the Base has a sort, the feed uses it, and a heading appears wherever the day changes. If it has no sort, the newest notes come first. Replies always sit with the note they reply to, not under their own date. The Base's **Group by** setting has no effect on the feed; it always groups by day.
 
@@ -105,7 +105,14 @@ Open _Settings → Feed View_ (under _Community plugins_):
 
 ## How your data is stored
 
-Everything stays in ordinary notes and in the `.base` file.
+Feed View never writes to your `.base` files. Each kind of data has one place:
+
+| What | Where |
+| --- | --- |
+| Reply links | the reply note's frontmatter |
+| Anything per Base or per view (fold state, mode) | the vault's local storage, on this device |
+| Plugin-wide settings | the plugin's `data.json` |
+| Filters, sort, visible properties | the `.base` file, saved by Bases itself |
 
 **In notes:** a reply note has one extra frontmatter property:
 
@@ -117,16 +124,16 @@ reply: "[[Original note]]"
 
 `reply` always points at the thread's top note. Replies are found anywhere in the vault, so a reply still shows under its note even if the Base's filters would exclude the reply itself.
 
-**In the `.base` file:** each Feed view stores its settings next to the view's other settings:
+**In the `.base` file:** nothing from Feed View. The feed reads the Base's sort, visible properties and view name, but never adds its own keys.
 
-| Key | Values | Default |
+**On this device only:** the following are kept in the vault's local storage, keyed by the Base and view name. Changing them never changes a file and isn't synced.
+
+| Setting | Values | Default |
 | --- | --- | --- |
-| `feedMode` | `live`, `reading` | `live` |
-| `dateProperty` | any date property, e.g. `note.date` | created time |
+| Fold state | the folded notes | none folded |
+| Mode | `live`, `reading` | `live` |
 
 **In the plugin's `data.json`:** plugin-wide settings (`fullWidth`, default `false`). Like other plugin settings, it syncs if you sync your plugin folder.
-
-**On this device only:** fold state is kept in the vault's local storage, keyed by the Base and view name. Folding never changes a file and isn't synced.
 
 ---
 
@@ -136,6 +143,7 @@ reply: "[[Original note]]"
 -   **Turning the plugin off or reloading it also relies on internals.** Bases keeps a layout's view running even after the plugin that made it is turned off. To stop old feeds running, Feed View rebuilds the tabs that show a feed when it unloads, and rebuilds them again when it loads, using `WorkspaceLeaf.rebuildView()` (`src/obsidian/internal/workspace.ts`). While the plugin is off, those tabs show Bases' "Unknown view type: feed-view".
 -   **Read aloud isn't implemented yet.** The menu item only shows "This feature isn't implemented yet".
 -   **Group by is ignored.** The feed always groups by day.
+-   **Day headings use the file's created time.** Anything that recreates the file, such as cloning the vault with git or copying it to another machine, can reset it, and those notes then show under the day they arrived.
 -   **Replies the Base doesn't return** show their note properties from frontmatter, but not formula properties.
 -   **Replies whose link doesn't resolve are hidden.** This happens if the original note is deleted, or renamed while _Automatically update internal links_ is off. The replies themselves are untouched and reappear when the link works again.
 -   **New reply notes are always named `Untitled…`**, in English.
