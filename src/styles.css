@@ -52,6 +52,10 @@
 	inset: 0;
 	overflow-y: auto;
 	-webkit-overflow-scrolling: touch;
+	/* Cards fade out as they scroll under the feed bar instead of being cut off. */
+	--feed-view-fade: 12px;
+	mask-image: linear-gradient(to bottom, transparent, #000 var(--feed-view-fade));
+	-webkit-mask-image: linear-gradient(to bottom, transparent, #000 var(--feed-view-fade));
 }
 
 .feed-view-viewport:focus-visible {
@@ -104,7 +108,7 @@
 .feed-view-bar-row {
 	flex: none;
 	padding-top: 20px;
-	padding-bottom: 5px;
+	padding-bottom: 10px;
 }
 
 .feed-view-footer {
@@ -122,7 +126,7 @@
 .feed-view-bar {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
+	justify-content: flex-end;
 	gap: 8px;
 	flex-wrap: wrap;
 }
@@ -144,15 +148,6 @@
 	height: 14px;
 }
 
-.feed-view-segmented {
-	display: flex;
-	gap: 2px;
-	padding: 2px;
-	border-radius: 7px;
-	background: var(--background-secondary);
-}
-
-.feed-view .feed-view-segment,
 .feed-view .feed-view-bar-button,
 .feed-view .feed-view-reply-button {
 	display: flex;
@@ -166,28 +161,6 @@
 	cursor: var(--cursor);
 }
 
-.feed-view .feed-view-segment {
-	gap: 4px;
-	padding: 3px 8px;
-	border-radius: 5px;
-	font-size: 12px;
-}
-
-.feed-view .feed-view-segment .feed-view-icon svg {
-	width: 13px;
-	height: 13px;
-}
-
-.feed-view .feed-view-segment.is-active {
-	background: var(--background-primary);
-	color: var(--text-normal);
-}
-
-.feed-view .feed-view-segment:disabled {
-	opacity: 0.5;
-	cursor: not-allowed;
-}
-
 .feed-view .feed-view-bar-button {
 	gap: 4px;
 	padding: 4px 6px;
@@ -195,14 +168,14 @@
 	font-size: 12px;
 }
 
-.feed-view .feed-view-bar-button:hover:not(:disabled),
-.feed-view .feed-view-segment:hover:not(.is-active):not(:disabled) {
+.feed-view .feed-view-bar-button:hover:not(:disabled) {
 	background: var(--background-modifier-hover);
 	color: var(--text-normal);
 }
 
 .feed-view .feed-view-bar-button:disabled {
 	opacity: 0.5;
+	cursor: not-allowed;
 }
 
 /* ---------- Day headings (R9) ---------- */
