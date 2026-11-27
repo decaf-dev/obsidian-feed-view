@@ -15,19 +15,17 @@ import { mount, unmount } from "svelte";
 import {
 	CONFIG_DATE_PROPERTY,
 	CONFIG_MODE,
-	CONFIG_WIDTH,
 	DEFAULT_MODE,
-	DEFAULT_WIDTH,
 	FEED_VIEW_TYPE,
 	NOT_IMPLEMENTED_MESSAGE,
 	type FeedMode,
-	type FeedWidth,
 } from "../constants";
 import { pruneFolds, renameFold, setAllFolded, toggleFold } from "../model/folds";
 import { buildRows, cardRowKey } from "../model/rows";
 import { allCardPaths, buildThreads } from "../model/threads";
 import type { Thread } from "../model/types";
 import type FeedViewPlugin from "../main";
+import type { FeedViewSettings } from "../settings";
 import Feed from "../svelte/Feed.svelte";
 import { FeedState, type CardView, type FeedActions } from "../svelte/feedState.svelte";
 import { BodyController } from "./bodies/BodyController";
@@ -88,7 +86,7 @@ export class FeedBasesView extends BasesView implements HoverParent {
 		this.plugin.views.add(this);
 		this.containerEl.addClass("feed-view-container");
 		this.feed.mode = this.readMode();
-		this.feed.width = this.readWidth();
+		this.applySettings(this.plugin.settings);
 
 		const bodies = new BodyController(this.app, (path) => this.app.vault.getFileByPath(path), this.feed.mode);
 		this.bodies = this.addChild(bodies);
@@ -157,7 +155,6 @@ export class FeedBasesView extends BasesView implements HoverParent {
 			this.feed.mode = mode;
 			this.bodies?.setMode(mode);
 		}
-		this.feed.width = this.readWidth();
 		this.ensureFoldStore();
 
 		const dateProperty = config.getAsPropertyId(CONFIG_DATE_PROPERTY);
@@ -252,9 +249,9 @@ export class FeedBasesView extends BasesView implements HoverParent {
 		return value === "reading" || value === "live" ? value : DEFAULT_MODE;
 	}
 
-	private readWidth(): FeedWidth {
-		const value = this.config?.get(CONFIG_WIDTH);
-		return value === "full" || value === "fixed" ? value : DEFAULT_WIDTH;
+	/** Applies the plugin-wide settings; called on load and whenever they change. */
+	applySettings(settings: FeedViewSettings) {
+		this.feed.fullWidth = settings.fullWidth;
 	}
 
 	/** Loads this view's fold state; the key depends on the Base file and view name. */
@@ -354,11 +351,6 @@ export class FeedBasesView extends BasesView implements HoverParent {
 			this.feed.mode = mode;
 			this.bodies?.setMode(mode);
 			this.config.set(CONFIG_MODE, mode);
-		},
-		toggleWidth: () => {
-			const width: FeedWidth = this.feed.width === "full" ? "fixed" : "full";
-			this.feed.width = width;
-			this.config.set(CONFIG_WIDTH, width);
 		},
 		toggleFold: (path) => this.setFolded(toggleFold(this.feed.folded, path)),
 		toggleAll: () =>

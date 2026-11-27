@@ -5,15 +5,20 @@ import { findLeafContaining } from "./obsidian/foldStore";
 import { rebuildLeaf, rebuildRememberedLeaves, rememberLeavesToRebuild } from "./obsidian/internal/workspace";
 import { ReplyIndex } from "./obsidian/ReplyIndex";
 import { feedViewOptions } from "./obsidian/viewOptions";
+import { DEFAULT_SETTINGS, FeedViewSettingTab, type FeedViewSettings } from "./settings";
 import "./styles.css";
 
 export default class FeedViewPlugin extends Plugin {
 	/** Vault-wide index of reply notes, shared by every open feed. */
 	replyIndex!: ReplyIndex;
+	settings: FeedViewSettings = { ...DEFAULT_SETTINGS };
 	/** Every feed currently open, so they can be torn down when the plugin unloads. */
 	readonly views = new Set<FeedBasesView>();
 
-	onload() {
+	async onload() {
+		await this.loadSettings();
+		this.addSettingTab(new FeedViewSettingTab(this));
+
 		this.replyIndex = this.addChild(new ReplyIndex(this.app));
 
 		// lets Obsidian's Page preview show notes when hovering card titles
@@ -32,6 +37,21 @@ export default class FeedViewPlugin extends Plugin {
 
 		// after a reload or re-enable, bring back the feeds the last unload took down
 		this.app.workspace.onLayoutReady(() => rebuildRememberedLeaves(this.app));
+	}
+
+	async loadSettings() {
+		this.settings = { ...DEFAULT_SETTINGS, ...((await this.loadData()) as Partial<FeedViewSettings> | null) };
+	}
+
+	/** Settings were changed in another vault window or by sync. */
+	async onExternalSettingsChange() {
+		await this.loadSettings();
+		this.applySettings();
+	}
+
+	/** Pushes the current settings to every open feed. */
+	applySettings() {
+		for (const view of this.views) view.applySettings(this.settings);
 	}
 
 	onunload() {

@@ -4,11 +4,10 @@
 
 	let { feed, actions }: { feed: FeedState; actions: FeedActions } = $props();
 
-	const full = $derived(feed.width === "full");
 	const live = $derived(feed.mode === "live");
 </script>
 
-<!-- R4, R6, R7: the feed's own controls, above the first card (not in the Base toolbar) -->
+<!-- R4, R6: the feed's own controls, above the first card (not in the Base toolbar) -->
 <div class="feed-view-bar">
 	<div class="feed-view-segmented" role="group" aria-label="Note mode">
 		<button
@@ -33,10 +32,6 @@
 		</button>
 	</div>
 	<div class="feed-view-bar-actions">
-		<button type="button" class="feed-view-bar-button" aria-pressed={full} onclick={() => actions.toggleWidth()}>
-			<span class="feed-view-icon" use:icon={full ? "fold-horizontal" : "move-horizontal"}></span>
-			{full ? "Fixed width" : "Full width"}
-		</button>
 		<button
 			type="button"
 			class="feed-view-bar-button"

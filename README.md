@@ -15,7 +15,7 @@ Everything stays in plain Markdown and frontmatter. Uninstall the plugin and you
 -   **Edit in place.** In **Live preview** mode each card body is Obsidian's own Markdown editor. Edits save to the note. Edits made elsewhere (another pane, sync) show up in the card, and are merged with anything you're typing.
 -   **Reading mode.** One switch above the first card shows every card read-only, as in Obsidian's Reading view.
 -   **Fold notes.** Fold a single card (it then shows "N lines hidden"), or use **Collapse all / Expand all**. Folding a note also hides its replies.
--   **Fixed or full width.** Fixed width follows Obsidian's readable line length. Full width spans the view with 24px margins.
+-   **Fixed or full width.** Fixed width follows Obsidian's readable line length. Full width spans the view with 24px margins. Choose it once, for every feed, in the plugin's settings.
 -   **Replies and threads.** Hover a card and click **Reply**, or use the ⋯ menu. A new reply note is created right away, shown indented under the original with a curved line, and focused so you can start typing in Live Preview. Threads are one level deep: replying to a reply adds to the same thread.
 -   **Day headings.** Cards are grouped under TODAY, YESTERDAY, then the weekday and date (WEDNESDAY, NOVEMBER 25), with the year added for other years. A heading appears only where the day changes.
 -   **Properties on the card.** The properties enabled in the Base's **Properties** menu appear between the title and the body, styled like Obsidian's. Checkboxes can be toggled from the card. Lists and tags show as pills.
@@ -58,7 +58,6 @@ The bar above the first card holds the feed's own controls:
 | Control | What it does |
 | --- | --- |
 | **Live preview \| Reading** | Edit every card in place, or show every card read-only. Saved with the view. |
-| **Full width / Fixed width** | Switch between a centred column (readable line length) and the full width of the view. Saved with the view. |
 | **Collapse all / Expand all** | Fold or unfold every card, replies included. Reads **Expand all** once every card is folded. |
 
 ### Cards
@@ -94,6 +93,14 @@ If the Base has a sort, the feed uses it, and a heading appears wherever the day
 
 Only the properties turned on in the Base's **Properties** menu are shown, in the Base's order. The note name isn't repeated, because it's the card title, and empty properties are left out. Checkbox properties can be toggled from the card; other properties are read-only for now.
 
+### Settings
+
+Open _Settings → Feed View_ (under _Community plugins_):
+
+| Setting | What it does |
+| --- | --- |
+| **Full width** | Off: cards sit in a centred column at Obsidian's readable line length. On: cards span the full width of the view. Applies to every feed, and open feeds update straight away. |
+
 ---
 
 ## How your data is stored
@@ -115,8 +122,9 @@ reply: "[[Original note]]"
 | Key | Values | Default |
 | --- | --- | --- |
 | `feedMode` | `live`, `reading` | `live` |
-| `feedWidth` | `fixed`, `full` | `fixed` |
 | `dateProperty` | any date property, e.g. `note.date` | created time |
+
+**In the plugin's `data.json`:** plugin-wide settings (`fullWidth`, default `false`). Like other plugin settings, it syncs if you sync your plugin folder.
 
 **On this device only:** fold state is kept in the vault's local storage, keyed by the Base and view name. Folding never changes a file and isn't synced.
 
@@ -142,7 +150,8 @@ reply: "[[Original note]]"
 
 | Part | Where | What it does |
 | --- | --- | --- |
-| Plugin | `src/main.ts` | Registers the `feed-view` Bases view and the reply index. |
+| Plugin | `src/main.ts` | Registers the `feed-view` Bases view, the reply index and the settings tab. |
+| Settings | `src/settings.ts` | The plugin-wide settings and their tab, using Obsidian's declarative settings API. |
 | Bases view | `src/obsidian/FeedBasesView.ts` | Turns Base results into threads and rows on every data update, and handles actions (fold, reply, menu). |
 | Reply index | `src/obsidian/ReplyIndex.ts` | A vault-wide map of `reply` links, kept up to date from the metadata cache. |
 | Card bodies | `src/obsidian/bodies/` | Mounts an editor or a Reading view render into each visible card, one per frame. |

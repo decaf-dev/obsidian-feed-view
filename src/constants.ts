@@ -6,14 +6,11 @@ export const REPLY_KEY = "reply";
 
 /** Keys this view stores in its entry of the .base file. */
 export const CONFIG_MODE = "feedMode";
-export const CONFIG_WIDTH = "feedWidth";
 export const CONFIG_DATE_PROPERTY = "dateProperty";
 
 export type FeedMode = "live" | "reading";
-export type FeedWidth = "fixed" | "full";
 
 export const DEFAULT_MODE: FeedMode = "live";
-export const DEFAULT_WIDTH: FeedWidth = "fixed";
 
 /** Rows the virtual list keeps rendered above and below the viewport. */
 export const VIRTUAL_BUFFER_SIZE = 5;
