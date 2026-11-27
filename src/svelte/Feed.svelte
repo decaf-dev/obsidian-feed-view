@@ -26,7 +26,12 @@
 	});
 </script>
 
-<div class="feed-view" class:is-full-width={feed.fullWidth}>
+<div
+	class="feed-view"
+	class:is-full-width={feed.width === "full"}
+	class:is-custom-width={feed.width === "custom"}
+	style:--feed-view-custom-width={feed.width === "custom" ? `${feed.customWidth}%` : null}
+>
 	<SvelteVirtualList
 		bind:this={list}
 		items={feed.rows}

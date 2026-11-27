@@ -92,6 +92,11 @@
 	max-width: none;
 }
 
+/* A percentage of the row, so 100% matches full width (both keep the 24px margins). */
+.feed-view.is-custom-width .feed-view-column {
+	max-width: var(--feed-view-custom-width, 100%);
+}
+
 .feed-view-bar-row {
 	padding-top: 20px;
 }
@@ -235,13 +240,14 @@
 	border: 1px solid var(--background-modifier-border);
 	border-radius: 8px;
 	background: var(--background-primary);
-	transition: background-color 120ms ease;
+	transition: box-shadow 120ms ease;
 }
 
+/* A drop shadow, not a background change, so the card body keeps its colour while you type. */
 .feed-view-card:hover,
 .feed-view-card:focus-within,
 .feed-view-card.is-menu-open {
-	background: var(--background-modifier-hover);
+	box-shadow: var(--shadow-s);
 }
 
 .feed-view-card-header {
@@ -305,7 +311,8 @@
 	color: var(--text-accent-hover);
 }
 
-.feed-view-hidden-lines {
+.feed-view-hidden-lines,
+.feed-view-card-time {
 	flex: none;
 	font-size: 12px;
 	color: var(--text-faint);
