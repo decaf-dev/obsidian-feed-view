@@ -161,8 +161,8 @@ Built with [Svelte 5](https://svelte.dev), bundled by [esbuild](https://esbuild.
 
 ### Requirements
 
--   [Bun](https://bun.sh/)
--   Node.js v22 (recommended)
+-   [Bun](https://bun.sh/): installs dependencies and runs the build scripts
+-   Node.js 22 or newer: runs the build and reload scripts
 
 ### Getting started
 
@@ -184,6 +184,8 @@ Built with [Svelte 5](https://svelte.dev), bundled by [esbuild](https://esbuild.
     ln -s /path/to/obsidian-feed-view/dist /path/to/your/vault/.obsidian/plugins/feed-view
     ```
 
+    Always link the **main checkout's** `dist/`, never a git worktree's. A worktree's `dist/` is deleted along with the worktree, which leaves the link dangling.
+
 4. In Obsidian, turn on the **Bases** core plugin and the **Feed View** community plugin.
 
 ### Scripts
@@ -192,7 +194,7 @@ Built with [Svelte 5](https://svelte.dev), bundled by [esbuild](https://esbuild.
 | --- | --- |
 | `bun run dev` | Watch build into `dist/`, reloading the plugin after each build |
 | `bun run build` | Type-check, then a production build |
-| `bun run test` | Unit tests for `src/model/` (Bun's built-in test runner) |
+| `bun run test` | Unit tests for `src/model/` and the reload script (Bun's built-in test runner) |
 | `bun run check` | `svelte-check` type checking for Svelte and TypeScript |
 | `bun run lint` | ESLint, including Obsidian's plugin rules |
 | `bun run reload` | Reload the plugin in Obsidian without rebuilding |
@@ -203,7 +205,7 @@ Before committing, run `bun run test`, `bun run check`, `bun run lint` and `bun 
 
 Obsidian doesn't pick up new plugin files on its own. If the official [Obsidian CLI](https://obsidian.md/help/cli) is enabled, the build reloads the plugin for you.
 
-1. Turn the CLI on in Obsidian under **Settings → General → Command line interface**, then follow the prompt to add it to your PATH. Check it with:
+1. Turn the CLI on in Obsidian under **Settings → General → Command line interface** (needs the 1.12.7 installer or newer), then follow the prompt to add it to your PATH. Check it with:
 
     ```bash
     obsidian version
@@ -221,7 +223,17 @@ Obsidian doesn't pick up new plugin files on its own. If the official [Obsidian 
 
     Run `obsidian vaults` to list the vault names Obsidian knows about.
 
-Every successful build now reloads the plugin in that vault. If the folder you linked into `.obsidian/plugins` isn't named `feed-view`, set `OBSIDIAN_PLUGIN_ID` in `.env` to match. Without a `.env` or the CLI, the build prints a short note once and carries on.
+Every successful build now reloads the plugin in that vault. If the folder you linked into `.obsidian/plugins` isn't named `feed-view`, set `OBSIDIAN_PLUGIN_ID` in `.env` to match. Without a `.env` or the CLI, the build prints a short note once and carries on. The CLI starts Obsidian if it isn't already running.
+
+#### Working in a git worktree
+
+Your vault links to the main checkout's `dist/`, so a reload from a worktree would load the main checkout's files, not the worktree's. Builds in a worktree therefore skip the reload. To try a worktree build in Obsidian:
+
+1. Stop any `bun run dev` watch running in the main checkout, or its next rebuild will overwrite the files you copy in.
+2. Copy `dist/main.js`, `dist/manifest.json` and `dist/styles.css` from the worktree into the main checkout's `dist/`.
+3. Run `bun run reload` from the main checkout.
+
+When you're done, rebuild in the main checkout to switch back.
 
 ### Testing in Obsidian
 
@@ -236,16 +248,9 @@ Useful things to try in a development vault:
 
 ### Releases
 
-The included workflow builds the plugin and attaches `main.js`, `manifest.json` and `styles.css` to a GitHub release whenever you push a tag.
+The included workflow builds the plugin and attaches `main.js`, `manifest.json` and `styles.css` to a GitHub release whenever you push a tag. It requests the `contents: write` permission itself, so you don't need to change the repository's Actions settings.
 
-First, give the workflow permission to create releases:
-
-1. Open the repository on GitHub
-2. Go to **Settings → Actions → General**
-3. Under **Workflow permissions**, select **Read and write permissions**
-4. Click **Save**
-
-Then tag a version that matches `manifest.json` and push it:
+Tag a version that matches `manifest.json` and push it:
 
 ```bash
 git tag 0.1.0

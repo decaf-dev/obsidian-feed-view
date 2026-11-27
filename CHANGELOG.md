@@ -24,6 +24,8 @@ The starter template is now **Feed View**, a Feed layout for Obsidian Bases.
 -   A virtualized feed (`@humanspeak/svelte-virtual-list`), so only nearby cards and editors exist and large Bases stay fast
 -   Unit tests for the feed's pure logic (`bun run test`)
 -   `dist/styles.css` built from `src/styles.css` and component styles
+-   Tests for the reload script's worktree detection and success check
+-   README section on working in a git worktree
 
 ### Changed
 
@@ -31,6 +33,17 @@ The starter template is now **Feed View**, a Feed layout for Obsidian Bases.
 -   License changed to MIT, © DecafDev
 -   README rewritten for the plugin
 -   esbuild resolves Svelte packages through the `svelte` export condition, and skips compiler warnings from `node_modules`
+-   Builds in a git worktree now skip the reload, even when `OBSIDIAN_VAULT` is set. The vault links to the main checkout's `dist/`, so a reload from a worktree would have loaded the main checkout's files
+-   The release workflow now uses `actions/checkout@v7`, `actions/setup-node@v7`, `oven-sh/setup-bun@v2` and `softprops/action-gh-release@v3`, installs with `--frozen-lockfile`, and fails if a release file is missing
+-   The release workflow now grants itself `contents: write`, so the repository's Actions permissions no longer need changing
+-   Node.js 22 or newer is now listed as required rather than recommended
+-   The README symlink step now says to link the main checkout's `dist/`, never a worktree's
+-   ESLint now ignores `.worktrees/`
+
+### Fixed
+
+-   A reload is only reported as successful when the Obsidian CLI prints `Reloaded:`. Previously any output that wasn't a known error, including none at all, counted as success
+-   Reload errors written to stderr are now shown
 
 ### Removed
 
