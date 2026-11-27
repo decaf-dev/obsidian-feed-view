@@ -235,13 +235,14 @@
 	border: 1px solid var(--background-modifier-border);
 	border-radius: 8px;
 	background: var(--background-primary);
-	transition: background-color 120ms ease;
+	transition: box-shadow 120ms ease;
 }
 
+/* A drop shadow, not a background change, so the card body keeps its colour while you type. */
 .feed-view-card:hover,
 .feed-view-card:focus-within,
 .feed-view-card.is-menu-open {
-	background: var(--background-modifier-hover);
+	box-shadow: var(--shadow-s);
 }
 
 .feed-view-card-header {
