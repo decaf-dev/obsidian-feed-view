@@ -46,6 +46,8 @@ The starter template is now **Feed View**, a Feed layout for Obsidian Bases.
 -   ESLint now ignores `.worktrees/`
 -   The Live preview / Reading mode is now kept in the vault's local storage, per view and on this device only, instead of in the `.base` file (`feedMode` is no longer written)
 -   Day headings always use the note's created time. The **Date property** view option is gone, and `dateProperty` in a `.base` file is ignored
+-   The feed bar's controls are icons only. **Live preview | Reading** is one button that toggles the mode, as in Obsidian's own view header: a book in Live preview, a pencil in Reading. **Collapse all / Expand all** shows only its icon, with the label on hover
+-   Cards fade out as they scroll under the feed bar, and the bar has a little more space below it, so cards no longer look cut off
 
 ### Fixed
 

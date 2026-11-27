@@ -13,7 +13,7 @@ Everything stays in plain Markdown and frontmatter. Uninstall the plugin and you
 -   **A Feed layout in Bases.** Pick **Feed** (newspaper icon) under _Configure view → Layout_. It works in any Base without setup. The Base toolbar is unchanged, and its Sort and Filter apply to the feed.
 -   **One card per note.** Each card has a fold chevron, a title link (click to open the note; ⌘/Ctrl-click opens a new tab; hover shows Page preview), the note's properties, and its body.
 -   **Edit in place.** In **Live preview** mode each card body is Obsidian's own Markdown editor. Edits save to the note. Edits made elsewhere (another pane, sync) show up in the card, and are merged with anything you're typing.
--   **Reading mode.** One switch above the first card shows every card read-only, as in Obsidian's Reading view. Feeds open in Live preview, or in Reading mode if you pick that as the **Default mode** in the settings.
+-   **Reading mode.** One button above the first card (a book icon, like Obsidian's own) shows every card read-only, as in Obsidian's Reading view. Feeds open in Live preview, or in Reading mode if you pick that as the **Default mode** in the settings.
 -   **Fold notes.** Fold a single card (it then shows "N lines hidden"), or use **Collapse all / Expand all**. Folding a note also hides its replies.
 -   **Default, full or custom width.** Default follows Obsidian's readable line length. Full width spans the view with 24px margins. Custom width uses a percentage of the view that you pick with a slider. Choose it once, for every feed, in the plugin's settings.
 -   **Replies and threads.** Hover a card and click **Reply**, or use the ⋯ menu. A new reply note is created right away, shown indented under the original with a curved line, and focused so you can start typing in Live Preview. Threads are one level deep: replying to a reply adds to the same thread. In the settings, turn **Reply buttons** off to hide Reply everywhere, or **Show replies on threads** off to hide replies from the feed.
@@ -58,8 +58,8 @@ The bar at the top of the feed holds the feed's own controls. It stays in place 
 
 | Control | What it does |
 | --- | --- |
-| **Live preview \| Reading** | Edit every card in place, or show every card read-only. A feed opens in the **Default mode** from the settings, and your choice lasts until you close it. |
-| **Collapse all / Expand all** | Fold or unfold every card, replies included. Reads **Expand all** once every card is folded. |
+| **Book / pencil icon** | Switch between Live preview (every card editable in place) and Reading (every card read-only). As in Obsidian, the icon shows the mode a click switches to: a book in Live preview, a pencil in Reading. A feed opens in the **Default mode** from the settings, and your choice lasts until you close it. |
+| **Collapse all / Expand all icon** | Fold or unfold every card, replies included. Hover it to see which it does: it switches to **Expand all** once every card is folded. |
 
 ### Cards
 
