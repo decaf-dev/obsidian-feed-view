@@ -9,8 +9,8 @@ import {
 	toggleFold,
 } from "../src/model/folds";
 import { countBodyLines, hiddenLinesLabel } from "../src/model/lines";
+import { parseFeedMode } from "../src/model/mode";
 import { nextUntitledName } from "../src/model/untitled";
-import { DEFAULT_VIEW_SETTINGS, parseViewSettings, serializeViewSettings } from "../src/model/viewSettings";
 
 describe("nextUntitledName", () => {
 	test("Untitled in an empty folder", () => {
@@ -91,19 +91,15 @@ describe("folds", () => {
 	});
 });
 
-describe("view settings", () => {
-	test("defaults for missing or malformed storage", () => {
-		expect(parseViewSettings(null)).toEqual(DEFAULT_VIEW_SETTINGS);
-		expect(parseViewSettings("live")).toEqual(DEFAULT_VIEW_SETTINGS);
-		expect(parseViewSettings({ mode: "edit" })).toEqual(DEFAULT_VIEW_SETTINGS);
+describe("parseFeedMode", () => {
+	test("keeps a known mode", () => {
+		expect(parseFeedMode("live")).toBe("live");
+		expect(parseFeedMode("reading")).toBe("reading");
 	});
 
-	test("round-trips stored settings", () => {
-		const settings = { mode: "reading" as const };
-		expect(parseViewSettings(serializeViewSettings(settings))).toEqual(settings);
-	});
-
-	test("removes the entry when everything is the default", () => {
-		expect(serializeViewSettings(DEFAULT_VIEW_SETTINGS)).toBeNull();
+	test("falls back to Live preview for anything else", () => {
+		expect(parseFeedMode(undefined)).toBe("live");
+		expect(parseFeedMode("edit")).toBe("live");
+		expect(parseFeedMode({ mode: "reading" })).toBe("live");
 	});
 });

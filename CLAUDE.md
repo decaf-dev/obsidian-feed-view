@@ -11,10 +11,11 @@ Put each new piece of state in one of these places:
 
 | State | Where | Code |
 | --- | --- | --- |
-| Per Base or per view (fold state, Live preview / Reading mode) | the vault's local storage, via `app.loadLocalStorage` / `app.saveLocalStorage`, keyed by Base and view name | `src/obsidian/settingsStore.ts`, `src/obsidian/foldStore.ts` |
-| Plugin-wide (width, day headings, show replies, reply buttons, show timestamp) | the plugin's `data.json`, shown in the settings tab | `src/settings.ts` |
+| Per Base or per view (fold state) | the vault's local storage, via `app.loadLocalStorage` / `app.saveLocalStorage`, keyed by Base and view name | `src/obsidian/foldStore.ts` |
+| Plugin-wide (default mode, width, day headings, show replies, reply buttons, show timestamp) | the plugin's `data.json`, shown in the settings tab | `src/settings.ts` |
 | Reply links | the reply note's frontmatter (`reply`) | `src/obsidian/replies.ts` |
 
-When adding a per-view setting, add it to `ViewSettings` in `src/model/viewSettings.ts`.
+When adding a per-view setting, store it the way `src/obsidian/foldStore.ts` does, with the
+parsing in `src/model/` so it can be unit tested.
 When adding a plugin-wide setting, add it to `FeedViewSettings` and the tab in
 `src/settings.ts`. Either way, update "How your data is stored" in the README.
