@@ -64,7 +64,7 @@ The bar above the first card holds the feed's own controls:
 ### Cards
 
 -   **Chevron** (left of the title): fold or unfold the card. A folded card shows only its title row and "N lines hidden" (non-blank lines of the body).
--   **Title**: opens the note. ⌘/Ctrl-click or middle-click opens it in a new tab.
+-   **Title**: opens the note. ⌘/Ctrl-click or middle-click opens it in a new tab. Right-click shows Obsidian's usual note menu (Open in new tab, Duplicate, Move file to…, Rename…, Delete and so on).
 -   **⋯** (right of the title, on hover): **Reply**, **Read aloud**, **Delete** (moves the note and all its replies to the trash; asks first when there are replies, otherwise only if "Confirm file deletion" is on).
 -   **Reply** (bottom-left, on hover): creates a reply and puts your cursor in it.
 

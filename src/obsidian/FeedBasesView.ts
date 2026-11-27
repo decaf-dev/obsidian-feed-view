@@ -376,6 +376,12 @@ export class FeedBasesView extends BasesView implements HoverParent {
 			});
 		},
 		openMenu: (path, rootPath, anchorEl) => this.showMenu(path, rootPath, anchorEl),
+		showNoteMenu: (path, evt) => {
+			// Obsidian adds the Open items, then fires "file-menu" so core and
+			// community plugins fill in the rest, as for any internal link
+			const menu = new Menu();
+			if (this.app.workspace.handleLinkContextMenu(menu, path, "")) menu.showAtMouseEvent(evt);
+		},
 		reply: (rootPath) => void this.createReplyAndFocus(rootPath),
 		toggleCheckbox: (path, id, checked) => {
 			const file = this.noteFile(path);

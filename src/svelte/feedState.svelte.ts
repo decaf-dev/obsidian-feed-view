@@ -45,6 +45,8 @@ export interface FeedActions {
 	openNote(path: string, evt: MouseEvent): void;
 	hoverNote(path: string, evt: MouseEvent, targetEl: HTMLElement): void;
 	openMenu(path: string, rootPath: string, anchorEl: HTMLElement): void;
+	/** Obsidian's own context menu for a note link (right-click on a title). */
+	showNoteMenu(path: string, evt: MouseEvent): void;
 	/** Creates a reply note in the thread and focuses its editor. */
 	reply(rootPath: string): void;
 	toggleCheckbox(path: string, id: BasesPropertyId, checked: boolean): void;
