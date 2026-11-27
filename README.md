@@ -18,7 +18,7 @@ Everything stays in plain Markdown and frontmatter. Uninstall the plugin and you
 -   **Default, full or custom width.** Default follows Obsidian's readable line length. Full width spans the view with 24px margins. Custom width uses a percentage of the view that you pick with a slider. Choose it once, for every feed, in the plugin's settings.
 -   **Replies and threads.** Hover a card and click **Reply**, or use the ⋯ menu. A new reply note is created right away, shown indented under the original with a curved line, and focused so you can start typing in Live Preview. Threads are one level deep: replying to a reply adds to the same thread. In the settings, turn **Reply buttons** off to hide Reply everywhere, or **Show replies on threads** off to hide replies from the feed.
 -   **Day headings.** Cards are grouped under TODAY, YESTERDAY, then the weekday and date (WEDNESDAY, NOVEMBER 25), with the year added for other years. A heading appears only where the day changes. They can be turned off in the settings.
--   **A timestamp on each card.** The time the note was created (3:42 PM) shows at the right of the title; hover it for the full date. It can be turned off in the settings.
+-   **A timestamp on each card.** The time the note was created (3:42 PM) shows at the right of the title; hover it for the full date. With day headings off, it includes the day instead (Today at 3:42 pm, Nov 13 at 3:42 pm). It can be turned off in the settings.
 -   **Properties on the card.** The properties enabled in the Base's **Properties** menu appear between the title and the body, styled like Obsidian's. Checkboxes can be toggled from the card. Lists and tags show as pills. They can be turned off with **Show frontmatter** in the settings.
 -   **Fast with large Bases.** The feed is virtualized: only the cards near the screen exist, so a Base with thousands of notes opens and scrolls quickly.
 -   **Follows your theme**, including dark mode.
@@ -65,7 +65,7 @@ The bar above the first card holds the feed's own controls:
 
 -   **Chevron** (left of the title): fold or unfold the card. A folded card shows only its title row and "N lines hidden" (non-blank lines of the body).
 -   **Title**: opens the note. ⌘/Ctrl-click or middle-click opens it in a new tab. Right-click shows Obsidian's usual note menu (Open in new tab, Duplicate, Move file to…, Rename…, Delete and so on).
--   **Timestamp** (right of the title): when the note was created, from the file's created time. Hover it for the full date. Hidden when **Show timestamp** is off.
+-   **Timestamp** (right of the title): when the note was created, from the file's created time. Hover it for the full date. With **Day headings** off, it includes the day: Today at 3:42 pm, Yesterday at 3:42 pm, Nov 13 at 3:42 pm (with the year for other years). Hidden when **Show timestamp** is off.
 -   **⋯** (right of the title, on hover): **Reply**, **Read aloud**, **Delete** (moves the note and all its replies to the trash; asks first when there are replies, otherwise only if "Confirm file deletion" is on).
 -   **Reply** (bottom-left, on hover): creates a reply and puts your cursor in it.
 
@@ -93,7 +93,7 @@ Cards are filed under the day of the note's **created time**, as Obsidian report
 
 If the Base has a sort, the feed uses it, and a heading appears wherever the day changes. If it has no sort, the newest notes come first. Replies always sit with the note they reply to, not under their own date. The Base's **Group by** setting has no effect on the feed; it always groups by day.
 
-With **Day headings** off, the feed keeps the same order but shows no headings.
+With **Day headings** off, the feed keeps the same order but shows no headings, and each card's timestamp includes the day instead (Today at 3:42 pm, Nov 13 at 3:42 pm).
 
 ### Properties
 
@@ -108,7 +108,7 @@ Open _Settings → Feed View_ (under _Community plugins_). The settings are in t
 | Setting | What it does |
 | --- | --- |
 | **Default mode** | **Live preview** (default) or **Reading**: the mode every feed opens in. Switching modes in a feed lasts until you close it, then the next feed you open starts in this mode again. Changing it doesn't switch feeds that are already open. |
-| **Day headings** | On (default): cards are grouped under a heading for each day. Off: no headings, same order. |
+| **Day headings** | On (default): cards are grouped under a heading for each day. Off: no headings, same order, and timestamps include the day (Today at 3:42 pm). |
 | **Show replies on threads** | On (default): replies show indented under the note they reply to. Off: replies are hidden, and only the original notes are shown. Reply notes never appear as top-level cards either way. |
 | **Reply buttons** | On (default): **Reply** shows on cards and in the ⋯ menu. Off: both are hidden. Existing replies still show in their threads. Only shown while **Show replies on threads** is on. |
 | **Show timestamp** | On (default): each card shows the time its note was created, from the file's created time. |

@@ -13,6 +13,7 @@ import {
 } from "obsidian";
 import { mount, unmount } from "svelte";
 import { FEED_VIEW_TYPE, NOT_IMPLEMENTED_MESSAGE, type FeedMode } from "../constants";
+import { dayKey } from "../model/dates";
 import { pruneFolds, renameFold, setAllFolded, toggleFold } from "../model/folds";
 import { buildRows, cardRowKey } from "../model/rows";
 import { allCardPaths, buildThreads } from "../model/threads";
@@ -29,7 +30,7 @@ import { buildPropertyRows, setCheckbox } from "./properties";
 import { toCardNote, type CardNote } from "./records";
 import { createReply } from "./replies";
 
-/** How often day headings are refreshed, so "Today" rolls over after midnight. */
+/** How often day headings and card times are refreshed, so "Today" rolls over after midnight. */
 const HEADING_REFRESH_MS = 5 * 60 * 1000;
 
 /**
@@ -201,12 +202,16 @@ export class FeedBasesView extends BasesView implements HoverParent {
 
 	/** Rebuilds just the row list (after folding, a settings change, or at midnight). */
 	private updateRows() {
+		const nowMs = Date.now();
 		this.feed.rows = buildRows({
 			threads: this.threads,
 			folded: this.feed.folded,
-			nowMs: Date.now(),
+			nowMs,
 			headings: this.dayHeadings,
 		});
+		this.feed.dayHeadings = this.dayHeadings;
+		// card times only show the day when it changes; skip the update otherwise so cards don't re-render
+		if (dayKey(nowMs) !== dayKey(this.feed.nowMs)) this.feed.nowMs = nowMs;
 	}
 
 	/**

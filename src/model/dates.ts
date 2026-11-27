@@ -48,6 +48,28 @@ export function dateTimeLabel(ms: number): string {
 	return `${WEEKDAY_YEAR_FORMAT.format(new Date(ms))} at ${timeLabel(ms)}`;
 }
 
+const SHORT_DATE_FORMAT = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" });
+
+const SHORT_DATE_YEAR_FORMAT = new Intl.DateTimeFormat("en-US", {
+	month: "short",
+	day: "numeric",
+	year: "numeric",
+});
+
+/**
+ * The date and time, as shown on a card when day headings are off, seen from
+ * `nowMs`: "Today at 3:13 pm", "Yesterday at 3:13 pm", "Nov 13 at 3:13 pm",
+ * or "Nov 13, 2025 at 3:13 pm" when the year differs from the current one.
+ */
+export function dayTimeLabel(ms: number, nowMs: number): string {
+	const key = dayKey(ms);
+	const time = timeLabel(ms).toLowerCase();
+	if (key === dayKey(nowMs)) return `Today at ${time}`;
+	if (key === previousDayKey(nowMs)) return `Yesterday at ${time}`;
+	const sameYear = new Date(ms).getFullYear() === new Date(nowMs).getFullYear();
+	return `${(sameYear ? SHORT_DATE_FORMAT : SHORT_DATE_YEAR_FORMAT).format(new Date(ms))} at ${time}`;
+}
+
 /**
  * The heading for the day containing `ms`, seen from `nowMs`:
  * "Today", "Yesterday", "Wednesday, November 25", or
