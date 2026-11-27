@@ -74,6 +74,12 @@ describe("buildRows", () => {
 		expect(new Set(headingKeys).size).toBe(3);
 	});
 
+	test("with headings off there are no heading rows and no card follows a heading", () => {
+		const rows = buildRows({ threads, folded: new Set(), nowMs: now, headings: false });
+		expect(summary(rows)).toEqual(["t1.md", "  t1-r.md", "t2.md", "y1.md", "w1.md"]);
+		expect(rows.some((r) => r.kind === "card" && r.afterHeading)).toBe(false);
+	});
+
 	test("an empty feed has no rows", () => {
 		expect(buildRows({ threads: [], folded: new Set(), nowMs: now })).toEqual([]);
 	});

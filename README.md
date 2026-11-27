@@ -16,8 +16,9 @@ Everything stays in plain Markdown and frontmatter. Uninstall the plugin and you
 -   **Reading mode.** One switch above the first card shows every card read-only, as in Obsidian's Reading view.
 -   **Fold notes.** Fold a single card (it then shows "N lines hidden"), or use **Collapse all / Expand all**. Folding a note also hides its replies.
 -   **Fixed or full width.** Fixed width follows Obsidian's readable line length. Full width spans the view with 24px margins. Choose it once, for every feed, in the plugin's settings.
--   **Replies and threads.** Hover a card and click **Reply**, or use the ⋯ menu. A new reply note is created right away, shown indented under the original with a curved line, and focused so you can start typing in Live Preview. Threads are one level deep: replying to a reply adds to the same thread.
--   **Day headings.** Cards are grouped under TODAY, YESTERDAY, then the weekday and date (WEDNESDAY, NOVEMBER 25), with the year added for other years. A heading appears only where the day changes.
+-   **Replies and threads.** Hover a card and click **Reply**, or use the ⋯ menu. A new reply note is created right away, shown indented under the original with a curved line, and focused so you can start typing in Live Preview. Threads are one level deep: replying to a reply adds to the same thread. Turn **Replies** off in the settings to hide Reply everywhere.
+-   **Day headings.** Cards are grouped under TODAY, YESTERDAY, then the weekday and date (WEDNESDAY, NOVEMBER 25), with the year added for other years. A heading appears only where the day changes. They can be turned off in the settings.
+-   **Created time on each card.** The time the note was created (3:42 PM) shows at the right of the title; hover it for the full date. It can be turned off in the settings.
 -   **Properties on the card.** The properties enabled in the Base's **Properties** menu appear between the title and the body, styled like Obsidian's. Checkboxes can be toggled from the card. Lists and tags show as pills.
 -   **Fast with large Bases.** The feed is virtualized: only the cards near the screen exist, so a Base with thousands of notes opens and scrolls quickly.
 -   **Follows your theme**, including dark mode.
@@ -64,8 +65,11 @@ The bar above the first card holds the feed's own controls:
 
 -   **Chevron** (left of the title): fold or unfold the card. A folded card shows only its title row and "N lines hidden" (non-blank lines of the body).
 -   **Title**: opens the note. ⌘/Ctrl-click or middle-click opens it in a new tab. Right-click shows Obsidian's usual note menu (Open in new tab, Duplicate, Move file to…, Rename…, Delete and so on).
+-   **Time** (right of the title): when the note was created, from the file's created time. Hover it for the full date. Hidden when **Show time** is off.
 -   **⋯** (right of the title, on hover): **Reply**, **Read aloud**, **Delete** (moves the note and all its replies to the trash; asks first when there are replies, otherwise only if "Confirm file deletion" is on).
 -   **Reply** (bottom-left, on hover): creates a reply and puts your cursor in it.
+
+When **Replies** is off, neither the Reply button nor **⋯ → Reply** is shown.
 
 Your fold state is remembered for each note, separately in each view, on this device.
 
@@ -89,6 +93,8 @@ Cards are filed under the day of the note's **created time**, as Obsidian report
 
 If the Base has a sort, the feed uses it, and a heading appears wherever the day changes. If it has no sort, the newest notes come first. Replies always sit with the note they reply to, not under their own date. The Base's **Group by** setting has no effect on the feed; it always groups by day.
 
+With **Day headings** off, the feed keeps the same order but shows no headings.
+
 ### Properties
 
 Only the properties turned on in the Base's **Properties** menu are shown, in the Base's order. The note name isn't repeated, because it's the card title, and empty properties are left out. Checkbox properties can be toggled from the card; other properties are read-only for now.
@@ -99,7 +105,12 @@ Open _Settings → Feed View_ (under _Community plugins_):
 
 | Setting | What it does |
 | --- | --- |
-| **Full width** | Off: cards sit in a centred column at Obsidian's readable line length. On: cards span the full width of the view. Applies to every feed, and open feeds update straight away. |
+| **Full width** | Off: cards sit in a centred column at Obsidian's readable line length. On: cards span the full width of the view. |
+| **Day headings** | On (default): cards are grouped under a heading for each day. Off: no headings, same order. |
+| **Replies** | On (default): **Reply** shows on cards and in the ⋯ menu. Off: both are hidden. Existing replies still show in their threads. |
+| **Show time** | On (default): each card shows the time its note was created, from the file's created time. |
+
+Settings apply to every feed, and open feeds update straight away.
 
 ---
 
@@ -133,7 +144,7 @@ reply: "[[Original note]]"
 | Fold state | the folded notes | none folded |
 | Mode | `live`, `reading` | `live` |
 
-**In the plugin's `data.json`:** plugin-wide settings (`fullWidth`, default `false`). Like other plugin settings, it syncs if you sync your plugin folder.
+**In the plugin's `data.json`:** plugin-wide settings: `fullWidth` (default `false`), `dayHeadings`, `replies` and `showTime` (each default `true`). Like other plugin settings, it syncs if you sync your plugin folder.
 
 ---
 

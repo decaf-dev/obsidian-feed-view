@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { dayKey, dayLabel, previousDayKey } from "../src/model/dates";
+import { dateTimeLabel, dayKey, dayLabel, previousDayKey, timeLabel } from "../src/model/dates";
 
 const at = (y: number, m: number, d: number, h = 12, min = 0) =>
 	new Date(y, m - 1, d, h, min).getTime();
@@ -52,5 +52,16 @@ describe("dayLabel", () => {
 
 	test("future days get a full date, not Today", () => {
 		expect(dayLabel(at(2026, 11, 28), now)).toBe("Saturday, November 28");
+	});
+});
+
+describe("timeLabel", () => {
+	test("shows the local time of day", () => {
+		expect(timeLabel(at(2026, 11, 27, 15, 42))).toBe("3:42 PM");
+		expect(timeLabel(at(2026, 11, 27, 0, 5))).toBe("12:05 AM");
+	});
+
+	test("the tooltip carries the full date", () => {
+		expect(dateTimeLabel(at(2026, 11, 27, 15, 42))).toBe("Friday, November 27, 2026 at 3:42 PM");
 	});
 });

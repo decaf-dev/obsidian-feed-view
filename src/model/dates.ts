@@ -36,6 +36,18 @@ const WEEKDAY_YEAR_FORMAT = new Intl.DateTimeFormat("en-US", {
 	year: "numeric",
 });
 
+const TIME_FORMAT = new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit" });
+
+/** The time of day, as shown on a card: "3:42 PM". */
+export function timeLabel(ms: number): string {
+	return TIME_FORMAT.format(new Date(ms));
+}
+
+/** The full date and time, for a card time's tooltip: "Friday, November 27, 2026 at 3:42 PM". */
+export function dateTimeLabel(ms: number): string {
+	return `${WEEKDAY_YEAR_FORMAT.format(new Date(ms))} at ${timeLabel(ms)}`;
+}
+
 /**
  * The heading for the day containing `ms`, seen from `nowMs`:
  * "Today", "Yesterday", "Wednesday, November 25", or

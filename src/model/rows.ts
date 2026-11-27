@@ -6,6 +6,8 @@ export interface BuildRowsInput {
 	/** Paths of folded cards. A folded root hides its replies (R5). */
 	folded: ReadonlySet<string>;
 	nowMs: number;
+	/** Insert day headings where the day changes. Defaults to true. */
+	headings?: boolean;
 }
 
 /**
@@ -15,14 +17,14 @@ export interface BuildRowsInput {
  *
  * Keys are stable across updates so rows keep their DOM and measured height.
  */
-export function buildRows({ threads, folded, nowMs }: BuildRowsInput): FeedRow[] {
+export function buildRows({ threads, folded, nowMs, headings = true }: BuildRowsInput): FeedRow[] {
 	const rows: FeedRow[] = [];
 	let lastDay: string | null = null;
 	let headingCount = 0;
 
 	for (const { root, replies } of threads) {
 		const day = dayKey(root.dateMs);
-		const newDay = day !== lastDay;
+		const newDay = headings && day !== lastDay;
 		if (newDay) {
 			// the same day can come up again under a non-date sort, so the key also carries the position
 			rows.push({

@@ -15,6 +15,8 @@ The starter template is now **Feed View**, a Feed layout for Obsidian Bases.
 -   Card bodies edited in place with Obsidian's Live Preview editor. Edits save to the note, and outside edits merge into the card
 -   A feed bar with **Live preview | Reading** and **Collapse all / Expand all**. The mode is saved with the view (`feedMode`)
 -   A settings tab (_Settings → Feed View_) with a **Full width** toggle that applies to every feed and updates open feeds straight away
+-   **Day headings**, **Replies** and **Show time** settings. Turning off Replies hides the Reply button and **⋯ → Reply**; existing replies still show in their threads
+-   Each card shows the time its note was created (from the file's created time), with the full date on hover
 -   Folding single cards ("N lines hidden"), with fold state kept per note and per view on this device
 -   Replies: **Reply** immediately creates an `Untitled` note in the parent's folder with `reply: "[[Parent]]"`, scrolls to its card and focuses its Live Preview editor. Replies show as indented cards joined by a curved line, are found anywhere in the vault, and stay one level deep
 -   Feeds open in tabs are rebuilt when the plugin is disabled, reloaded or re-enabled, so they never keep running old code

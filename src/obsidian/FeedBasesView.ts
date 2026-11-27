@@ -57,6 +57,8 @@ export class FeedBasesView extends BasesView implements HoverParent {
 	private svelteApp: Record<string, unknown> | null = null;
 
 	private threads: Thread<CardNote>[] = [];
+	/** Whether to group cards under day headings (a plugin setting). */
+	private dayHeadings = true;
 	private notes = new Map<string, CardNote>();
 	private foldStore: FoldStore | null = null;
 	private settingsStore: SettingsStore | null = null;
@@ -185,6 +187,7 @@ export class FeedBasesView extends BasesView implements HoverParent {
 				cards.set(note.path, {
 					path: note.path,
 					title: note.title,
+					createdMs: note.file.stat.ctime,
 					properties: buildPropertyRows(this.app, note, order, displayName),
 				});
 			}
@@ -203,12 +206,13 @@ export class FeedBasesView extends BasesView implements HoverParent {
 		}
 	}
 
-	/** Rebuilds just the row list (after folding, or at midnight). */
+	/** Rebuilds just the row list (after folding, a settings change, or at midnight). */
 	private updateRows() {
 		this.feed.rows = buildRows({
 			threads: this.threads,
 			folded: this.feed.folded,
 			nowMs: Date.now(),
+			headings: this.dayHeadings,
 		});
 	}
 
@@ -219,7 +223,7 @@ export class FeedBasesView extends BasesView implements HoverParent {
 	 */
 	private async createReplyAndFocus(rootPath: string) {
 		const parent = this.noteFile(rootPath);
-		if (!parent || this.replyInFlight) return;
+		if (!parent || this.replyInFlight || !this.feed.replies) return;
 		this.replyInFlight = true;
 		try {
 			// leave the card being typed in (its typing is saved); focus moves to the new reply
@@ -246,6 +250,12 @@ export class FeedBasesView extends BasesView implements HoverParent {
 	/** Applies the plugin-wide settings; called on load and whenever they change. */
 	applySettings(settings: FeedViewSettings) {
 		this.feed.fullWidth = settings.fullWidth;
+		this.feed.replies = settings.replies;
+		this.feed.showTime = settings.showTime;
+		if (settings.dayHeadings !== this.dayHeadings) {
+			this.dayHeadings = settings.dayHeadings;
+			this.updateRows();
+		}
 	}
 
 	/**
@@ -321,13 +331,15 @@ export class FeedBasesView extends BasesView implements HoverParent {
 		const file = this.noteFile(path);
 		if (!file) return;
 		const menu = new Menu();
-		menu.addItem((item) =>
-			item
-				.setTitle("Reply")
-				.setIcon("reply")
-				.onClick(() => this.actions.reply(rootPath))
-		);
-		menu.addSeparator();
+		if (this.feed.replies) {
+			menu.addItem((item) =>
+				item
+					.setTitle("Reply")
+					.setIcon("reply")
+					.onClick(() => this.actions.reply(rootPath))
+			);
+			menu.addSeparator();
+		}
 		menu.addItem((item) =>
 			item
 				.setTitle("Read aloud")

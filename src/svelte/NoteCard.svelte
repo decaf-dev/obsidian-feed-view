@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { dateTimeLabel, timeLabel } from "../model/dates";
 	import { hiddenLinesLabel } from "../model/lines";
 	import type { CardRow } from "../model/types";
 	import { icon } from "./actions";
@@ -73,6 +74,13 @@
 				{#if folded && hiddenLines !== undefined}
 					<span class="feed-view-hidden-lines">{hiddenLinesLabel(hiddenLines)}</span>
 				{/if}
+				{#if feed.showTime}
+					<time
+						class="feed-view-card-time"
+						datetime={new Date(card.createdMs).toISOString()}
+						aria-label={dateTimeLabel(card.createdMs)}>{timeLabel(card.createdMs)}</time
+					>
+				{/if}
 				<button
 					type="button"
 					class="feed-view-more clickable-icon"
@@ -89,11 +97,17 @@
 						<PropertyList {card} {actions} />
 					{/if}
 					<CardBody path={card.path} {actions} />
-					<div class="feed-view-card-actions">
-						<button type="button" class="feed-view-reply-button" onclick={() => actions.reply(row.rootPath)}>
-							<span class="feed-view-icon" use:icon={"reply"}></span>Reply
-						</button>
-					</div>
+					{#if feed.replies}
+						<div class="feed-view-card-actions">
+							<button
+								type="button"
+								class="feed-view-reply-button"
+								onclick={() => actions.reply(row.rootPath)}
+							>
+								<span class="feed-view-icon" use:icon={"reply"}></span>Reply
+							</button>
+						</div>
+					{/if}
 				</div>
 			{/if}
 		</article>

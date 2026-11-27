@@ -8,6 +8,8 @@ import type { PropertyRow } from "../obsidian/properties";
 export interface CardView {
 	path: string;
 	title: string;
+	/** The file's created time (ms since epoch), shown when the "Show time" setting is on. */
+	createdMs: number;
 	properties: PropertyRow[];
 }
 
@@ -24,6 +26,10 @@ export class FeedState {
 	mode = $state<FeedMode>(DEFAULT_MODE);
 	/** Span the view instead of the readable line length (a plugin setting). */
 	fullWidth = $state(false);
+	/** Offer Reply on cards and in the ⋯ menu (a plugin setting). */
+	replies = $state(true);
+	/** Show each note's created time on its card (a plugin setting). */
+	showTime = $state(true);
 	/** False when this Obsidian version lacks the internals for the live editor. */
 	liveAvailable = $state(true);
 	/** True once the first data update has been rendered. */
