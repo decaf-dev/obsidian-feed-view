@@ -247,6 +247,7 @@ export class FeedBasesView extends BasesView implements HoverParent {
 		// a new reply would never appear while replies are hidden
 		this.feed.replyButtons = settings.showReplies && settings.replyButtons;
 		this.feed.showTimestamp = settings.showTimestamp;
+		this.feed.showFrontmatter = settings.showFrontmatter;
 		if (settings.showReplies !== this.showReplies) {
 			this.showReplies = settings.showReplies;
 			// the threads themselves change, so rebuild them from the Base results

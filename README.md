@@ -19,7 +19,7 @@ Everything stays in plain Markdown and frontmatter. Uninstall the plugin and you
 -   **Replies and threads.** Hover a card and click **Reply**, or use the ⋯ menu. A new reply note is created right away, shown indented under the original with a curved line, and focused so you can start typing in Live Preview. Threads are one level deep: replying to a reply adds to the same thread. In the settings, turn **Reply buttons** off to hide Reply everywhere, or **Show replies on threads** off to hide replies from the feed.
 -   **Day headings.** Cards are grouped under TODAY, YESTERDAY, then the weekday and date (WEDNESDAY, NOVEMBER 25), with the year added for other years. A heading appears only where the day changes. They can be turned off in the settings.
 -   **A timestamp on each card.** The time the note was created (3:42 PM) shows at the right of the title; hover it for the full date. It can be turned off in the settings.
--   **Properties on the card.** The properties enabled in the Base's **Properties** menu appear between the title and the body, styled like Obsidian's. Checkboxes can be toggled from the card. Lists and tags show as pills.
+-   **Properties on the card.** The properties enabled in the Base's **Properties** menu appear between the title and the body, styled like Obsidian's. Checkboxes can be toggled from the card. Lists and tags show as pills. They can be turned off with **Show frontmatter** in the settings.
 -   **Fast with large Bases.** The feed is virtualized: only the cards near the screen exist, so a Base with thousands of notes opens and scrolls quickly.
 -   **Follows your theme**, including dark mode.
 
@@ -97,7 +97,7 @@ With **Day headings** off, the feed keeps the same order but shows no headings.
 
 ### Properties
 
-Only the properties turned on in the Base's **Properties** menu are shown, in the Base's order. The note name isn't repeated, because it's the card title, and empty properties are left out. Checkbox properties can be toggled from the card; other properties are read-only for now.
+Only the properties turned on in the Base's **Properties** menu are shown, in the Base's order, and only while **Show frontmatter** is on in the settings. A new Feed view starts with none turned on, so its cards show no properties until you pick some there. Frontmatter is never shown in the card body, so a property that isn't turned on doesn't appear anywhere on the card. The note name isn't repeated, because it's the card title, and empty properties are left out. Checkbox properties can be toggled from the card; other properties are read-only for now.
 
 ### Settings
 
@@ -112,6 +112,7 @@ Open _Settings → Feed View_ (under _Community plugins_). The settings are in t
 | **Show replies on threads** | On (default): replies show indented under the note they reply to. Off: replies are hidden, and only the original notes are shown. Reply notes never appear as top-level cards either way. |
 | **Reply buttons** | On (default): **Reply** shows on cards and in the ⋯ menu. Off: both are hidden. Existing replies still show in their threads. Only shown while **Show replies on threads** is on. |
 | **Show timestamp** | On (default): each card shows the time its note was created, from the file's created time. |
+| **Show frontmatter** | On (default): each card shows the note's properties between the title and the body. Only the properties turned on in the Base's **Properties** menu are shown, so you still need to turn them on there. Off: no properties on any card. |
 
 **Styling**
 
@@ -151,7 +152,7 @@ reply: "[[Original note]]"
 
 **Not stored:** switching between Live preview and Reading in a feed. It lasts until the feed is closed.
 
-**In the plugin's `data.json`:** plugin-wide settings: `defaultMode` (`live` or `reading`; default `live`), `width` (`default`, `full` or `custom`; default `default`), `customWidth` (percent, 25–100, default `100`), `dayHeadings`, `showReplies`, `replyButtons` and `showTimestamp` (each default `true`). Like other plugin settings, it syncs if you sync your plugin folder.
+**In the plugin's `data.json`:** plugin-wide settings: `defaultMode` (`live` or `reading`; default `live`), `width` (`default`, `full` or `custom`; default `default`), `customWidth` (percent, 25–100, default `100`), `dayHeadings`, `showReplies`, `replyButtons`, `showTimestamp` and `showFrontmatter` (each default `true`). Like other plugin settings, it syncs if you sync your plugin folder.
 
 ---
 
