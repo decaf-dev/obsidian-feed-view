@@ -35,6 +35,10 @@ export class FeedState {
 	showTimestamp = $state(true);
 	/** Show the properties enabled in the Base's Properties menu on each card (a plugin setting). */
 	showFrontmatter = $state(true);
+	/** Group cards under day headings (a plugin setting). When off, card times include the day. */
+	dayHeadings = $state(true);
+	/** When the rows were last built; card times are relative to it ("Today at 3:13 pm"). */
+	nowMs = $state(Date.now());
 	/** False when this Obsidian version lacks the internals for the live editor. */
 	liveAvailable = $state(true);
 	/** True once the first data update has been rendered. */

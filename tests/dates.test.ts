@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { dateTimeLabel, dayKey, dayLabel, previousDayKey, timeLabel } from "../src/model/dates";
+import { dateTimeLabel, dayKey, dayTimeLabel, dayLabel, previousDayKey, timeLabel } from "../src/model/dates";
 
 const at = (y: number, m: number, d: number, h = 12, min = 0) =>
 	new Date(y, m - 1, d, h, min).getTime();
@@ -63,5 +63,22 @@ describe("timeLabel", () => {
 
 	test("the tooltip carries the full date", () => {
 		expect(dateTimeLabel(at(2026, 11, 27, 15, 42))).toBe("Friday, November 27, 2026 at 3:42 PM");
+	});
+});
+
+describe("dayTimeLabel", () => {
+	const now = at(2026, 11, 27, 9);
+
+	test("Today and Yesterday with the time", () => {
+		expect(dayTimeLabel(at(2026, 11, 27, 15, 13), now)).toBe("Today at 3:13 pm");
+		expect(dayTimeLabel(at(2026, 11, 26, 0, 5), now)).toBe("Yesterday at 12:05 am");
+	});
+
+	test("short date for older days in the current year", () => {
+		expect(dayTimeLabel(at(2026, 11, 13, 15, 13), now)).toBe("Nov 13 at 3:13 pm");
+	});
+
+	test("adds the year when it is not the current year", () => {
+		expect(dayTimeLabel(at(2025, 11, 13, 15, 13), now)).toBe("Nov 13, 2025 at 3:13 pm");
 	});
 });

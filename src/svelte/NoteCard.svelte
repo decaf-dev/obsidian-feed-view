@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { dateTimeLabel, timeLabel } from "../model/dates";
+	import { dateTimeLabel, dayTimeLabel, timeLabel } from "../model/dates";
 	import { hiddenLinesLabel } from "../model/lines";
 	import type { CardRow } from "../model/types";
 	import { icon } from "./actions";
@@ -78,7 +78,10 @@
 					<time
 						class="feed-view-card-time"
 						datetime={new Date(card.createdMs).toISOString()}
-						aria-label={dateTimeLabel(card.createdMs)}>{timeLabel(card.createdMs)}</time
+						aria-label={dateTimeLabel(card.createdMs)}
+						>{feed.dayHeadings
+							? timeLabel(card.createdMs)
+							: dayTimeLabel(card.createdMs, feed.nowMs)}</time
 					>
 				{/if}
 				<button
