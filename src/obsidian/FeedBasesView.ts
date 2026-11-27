@@ -12,15 +12,11 @@ import {
 	type Value,
 } from "obsidian";
 import { mount, unmount } from "svelte";
-import {
-	FEED_VIEW_TYPE,
-	NOT_IMPLEMENTED_MESSAGE,
-} from "../constants";
+import { FEED_VIEW_TYPE, NOT_IMPLEMENTED_MESSAGE, type FeedMode } from "../constants";
 import { pruneFolds, renameFold, setAllFolded, toggleFold } from "../model/folds";
 import { buildRows, cardRowKey } from "../model/rows";
 import { allCardPaths, buildThreads } from "../model/threads";
 import type { Thread } from "../model/types";
-import { DEFAULT_VIEW_SETTINGS, type ViewSettings } from "../model/viewSettings";
 import type FeedViewPlugin from "../main";
 import type { FeedViewSettings } from "../settings";
 import Feed from "../svelte/Feed.svelte";
@@ -32,7 +28,6 @@ import { LineCounter } from "./lineCounts";
 import { buildPropertyRows, setCheckbox } from "./properties";
 import { toCardNote, type CardNote } from "./records";
 import { createReply } from "./replies";
-import { SettingsStore, settingsStorageKey } from "./settingsStore";
 
 /** How often day headings are refreshed, so "Today" rolls over after midnight. */
 const HEADING_REFRESH_MS = 5 * 60 * 1000;
@@ -63,9 +58,7 @@ export class FeedBasesView extends BasesView implements HoverParent {
 	private showReplies = true;
 	private notes = new Map<string, CardNote>();
 	private foldStore: FoldStore | null = null;
-	private settingsStore: SettingsStore | null = null;
-	private settings: ViewSettings = { ...DEFAULT_VIEW_SETTINGS };
-	/** The Base file and view name the stores were loaded for. */
+	/** The Base file and view name the fold state was loaded for. */
 	private localKey: string | null = null;
 
 	/** A reply that was just created, to scroll to once its card is rendered. */
@@ -91,6 +84,8 @@ export class FeedBasesView extends BasesView implements HoverParent {
 		this.plugin.views.add(this);
 		this.containerEl.addClass("feed-view-container");
 		this.applySettings(this.plugin.settings);
+		// every feed opens in the default mode; switching lasts until it's closed
+		this.feed.mode = this.plugin.settings.defaultMode;
 
 		const bodies = new BodyController(this.app, (path) => this.app.vault.getFileByPath(path), this.feed.mode);
 		this.bodies = this.addChild(bodies);
@@ -155,11 +150,6 @@ export class FeedBasesView extends BasesView implements HoverParent {
 
 		const config = this.config;
 		this.ensureLocalStores();
-		const mode = this.feed.liveAvailable ? this.settings.mode : "reading";
-		if (mode !== this.feed.mode) {
-			this.feed.mode = mode;
-			this.bodies?.setMode(mode);
-		}
 
 		const hasBaseSort = config.getSort().length > 0;
 		const order = config.getOrder();
@@ -269,8 +259,9 @@ export class FeedBasesView extends BasesView implements HoverParent {
 	}
 
 	/**
-	 * Loads this view's fold state and settings from local storage. Both are
-	 * keyed by the Base file and view name, so they reload when either changes.
+	 * Loads this view's fold state from local storage. It's keyed by the Base
+	 * file and view name, so it reloads when either changes. Showing another
+	 * view is like opening a new feed, so the mode goes back to the default too.
 	 */
 	private ensureLocalStores() {
 		const baseKey = findBaseKey(this.app, this.containerEl);
@@ -280,13 +271,15 @@ export class FeedBasesView extends BasesView implements HoverParent {
 		this.localKey = key;
 		this.foldStore = new FoldStore(this.app, foldStorageKey(baseKey, viewName));
 		this.feed.folded = pruneFolds(this.foldStore.load(), (path) => this.app.vault.getFileByPath(path) !== null);
-		this.settingsStore = new SettingsStore(this.app, settingsStorageKey(baseKey, viewName));
-		this.settings = this.settingsStore.load();
+		this.setMode(this.plugin.settings.defaultMode);
 	}
 
-	private updateSettings(change: Partial<ViewSettings>) {
-		this.settings = { ...this.settings, ...change };
-		this.settingsStore?.save(this.settings);
+	/** Switches every card to Live preview or Reading, for as long as the feed is open. */
+	private setMode(mode: FeedMode) {
+		if (mode === "live" && !this.feed.liveAvailable) mode = "reading";
+		if (mode === this.feed.mode) return;
+		this.feed.mode = mode;
+		this.bodies?.setMode(mode);
 	}
 
 	private setFolded(folded: ReadonlySet<string>) {
@@ -373,13 +366,7 @@ export class FeedBasesView extends BasesView implements HoverParent {
 	}
 
 	private readonly actions: FeedActions = {
-		setMode: (mode) => {
-			if (mode === "live" && !this.feed.liveAvailable) return;
-			if (mode === this.feed.mode) return;
-			this.feed.mode = mode;
-			this.bodies?.setMode(mode);
-			this.updateSettings({ mode });
-		},
+		setMode: (mode) => this.setMode(mode),
 		toggleFold: (path) => this.setFolded(toggleFold(this.feed.folded, path)),
 		toggleAll: () =>
 			this.setFolded(setAllFolded(this.feed.folded, this.feed.allPaths, this.feed.anyExpanded)),

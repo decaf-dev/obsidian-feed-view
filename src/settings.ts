@@ -1,5 +1,7 @@
 import { PluginSettingTab, type SettingDefinitionItem } from "obsidian";
+import { DEFAULT_MODE, type FeedMode } from "./constants";
 import type FeedViewPlugin from "./main";
+import { parseFeedMode } from "./model/mode";
 import {
 	CUSTOM_WIDTH_STEP,
 	MAX_CUSTOM_WIDTH,
@@ -12,9 +14,14 @@ import {
 /**
  * Plugin-wide settings, stored in the plugin's data.json. Anything that
  * differs per Base or per view belongs in local storage instead
- * (src/obsidian/settingsStore.ts), never in the .base file.
+ * (like src/obsidian/foldStore.ts), never in the .base file.
  */
 export interface FeedViewSettings {
+	/**
+	 * The mode every feed opens in. Switching modes in a feed lasts only
+	 * until that feed is closed; it isn't saved.
+	 */
+	defaultMode: FeedMode;
 	/** The column width: readable line length, the full view, or `customWidth`. */
 	width: WidthMode;
 	/** The column width in percent of the view, used when `width` is "custom". */
@@ -30,6 +37,7 @@ export interface FeedViewSettings {
 }
 
 export const DEFAULT_SETTINGS: FeedViewSettings = {
+	defaultMode: DEFAULT_MODE,
 	width: "default",
 	customWidth: MAX_CUSTOM_WIDTH,
 	dayHeadings: true,
@@ -42,6 +50,7 @@ export const DEFAULT_SETTINGS: FeedViewSettings = {
 export function parseSettings(raw: unknown): FeedViewSettings {
 	const stored = (typeof raw === "object" && raw !== null ? raw : {}) as Partial<FeedViewSettings>;
 	const settings = { ...DEFAULT_SETTINGS, ...stored };
+	settings.defaultMode = parseFeedMode(stored.defaultMode);
 	settings.width = parseWidthMode(stored.width);
 	settings.customWidth = parseCustomWidth(stored.customWidth);
 	return settings;
@@ -58,6 +67,16 @@ export class FeedViewSettingTab extends PluginSettingTab {
 				type: "group",
 				heading: "Features",
 				items: [
+					{
+						name: "Default mode",
+						desc: "The mode a feed opens in. Switching modes in a feed lasts until you close it.",
+						control: {
+							type: "dropdown",
+							key: "defaultMode",
+							defaultValue: DEFAULT_SETTINGS.defaultMode,
+							options: { live: "Live preview", reading: "Reading" },
+						},
+					},
 					{
 						name: "Day headings",
 						desc: "Group cards under a heading for each day, such as Today and Yesterday.",

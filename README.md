@@ -13,7 +13,7 @@ Everything stays in plain Markdown and frontmatter. Uninstall the plugin and you
 -   **A Feed layout in Bases.** Pick **Feed** (newspaper icon) under _Configure view → Layout_. It works in any Base without setup. The Base toolbar is unchanged, and its Sort and Filter apply to the feed.
 -   **One card per note.** Each card has a fold chevron, a title link (click to open the note; ⌘/Ctrl-click opens a new tab; hover shows Page preview), the note's properties, and its body.
 -   **Edit in place.** In **Live preview** mode each card body is Obsidian's own Markdown editor. Edits save to the note. Edits made elsewhere (another pane, sync) show up in the card, and are merged with anything you're typing.
--   **Reading mode.** One switch above the first card shows every card read-only, as in Obsidian's Reading view.
+-   **Reading mode.** One switch above the first card shows every card read-only, as in Obsidian's Reading view. Feeds open in Live preview, or in Reading mode if you pick that as the **Default mode** in the settings.
 -   **Fold notes.** Fold a single card (it then shows "N lines hidden"), or use **Collapse all / Expand all**. Folding a note also hides its replies.
 -   **Default, full or custom width.** Default follows Obsidian's readable line length. Full width spans the view with 24px margins. Custom width uses a percentage of the view that you pick with a slider. Choose it once, for every feed, in the plugin's settings.
 -   **Replies and threads.** Hover a card and click **Reply**, or use the ⋯ menu. A new reply note is created right away, shown indented under the original with a curved line, and focused so you can start typing in Live Preview. Threads are one level deep: replying to a reply adds to the same thread. In the settings, turn **Reply buttons** off to hide Reply everywhere, or **Show replies on threads** off to hide replies from the feed.
@@ -58,7 +58,7 @@ The bar above the first card holds the feed's own controls:
 
 | Control | What it does |
 | --- | --- |
-| **Live preview \| Reading** | Edit every card in place, or show every card read-only. Remembered for this view on this device. |
+| **Live preview \| Reading** | Edit every card in place, or show every card read-only. A feed opens in the **Default mode** from the settings, and your choice lasts until you close it. |
 | **Collapse all / Expand all** | Fold or unfold every card, replies included. Reads **Expand all** once every card is folded. |
 
 ### Cards
@@ -107,6 +107,7 @@ Open _Settings → Feed View_ (under _Community plugins_). The settings are in t
 
 | Setting | What it does |
 | --- | --- |
+| **Default mode** | **Live preview** (default) or **Reading**: the mode every feed opens in. Switching modes in a feed lasts until you close it, then the next feed you open starts in this mode again. Changing it doesn't switch feeds that are already open. |
 | **Day headings** | On (default): cards are grouped under a heading for each day. Off: no headings, same order. |
 | **Show replies on threads** | On (default): replies show indented under the note they reply to. Off: replies are hidden, and only the original notes are shown. Reply notes never appear as top-level cards either way. |
 | **Reply buttons** | On (default): **Reply** shows on cards and in the ⋯ menu. Off: both are hidden. Existing replies still show in their threads. Only shown while **Show replies on threads** is on. |
@@ -119,7 +120,7 @@ Open _Settings → Feed View_ (under _Community plugins_). The settings are in t
 | **Width** | **Default**: cards sit in a centred column at Obsidian's readable line length. **Full width**: cards span the full width of the view. **Custom width**: cards use a percentage of the view's width, set with the slider below. |
 | **Custom width** | Only shown when Width is **Custom width**. A slider from 25% to 100% of the view, in steps of 5%. Default 100%, the same as full width. |
 
-Settings apply to every feed, and open feeds update straight away.
+Settings apply to every feed, and open feeds update straight away (except **Default mode**, which applies the next time a feed opens).
 
 ---
 
@@ -130,7 +131,7 @@ Feed View never writes to your `.base` files. Each kind of data has one place:
 | What | Where |
 | --- | --- |
 | Reply links | the reply note's frontmatter |
-| Anything per Base or per view (fold state, mode) | the vault's local storage, on this device |
+| Anything per Base or per view (fold state) | the vault's local storage, on this device |
 | Plugin-wide settings | the plugin's `data.json` |
 | Filters, sort, visible properties | the `.base` file, saved by Bases itself |
 
@@ -146,14 +147,11 @@ reply: "[[Original note]]"
 
 **In the `.base` file:** nothing from Feed View. The feed reads the Base's sort, visible properties and view name, but never adds its own keys.
 
-**On this device only:** the following are kept in the vault's local storage, keyed by the Base and view name. Changing them never changes a file and isn't synced.
+**On this device only:** fold state (which notes are folded; none by default) is kept in the vault's local storage, keyed by the Base and view name. Folding never changes a file and isn't synced.
 
-| Setting | Values | Default |
-| --- | --- | --- |
-| Fold state | the folded notes | none folded |
-| Mode | `live`, `reading` | `live` |
+**Not stored:** switching between Live preview and Reading in a feed. It lasts until the feed is closed.
 
-**In the plugin's `data.json`:** plugin-wide settings: `width` (`default`, `full` or `custom`; default `default`), `customWidth` (percent, 25–100, default `100`), `dayHeadings`, `showReplies`, `replyButtons` and `showTimestamp` (each default `true`). Like other plugin settings, it syncs if you sync your plugin folder.
+**In the plugin's `data.json`:** plugin-wide settings: `defaultMode` (`live` or `reading`; default `live`), `width` (`default`, `full` or `custom`; default `default`), `customWidth` (percent, 25–100, default `100`), `dayHeadings`, `showReplies`, `replyButtons` and `showTimestamp` (each default `true`). Like other plugin settings, it syncs if you sync your plugin folder.
 
 ---
 

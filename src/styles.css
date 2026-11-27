@@ -319,6 +319,12 @@
 	white-space: nowrap;
 }
 
+/* "1 line hidden · 3:42 PM": a dot between the two, spaced like the header's gap */
+.feed-view-hidden-lines + .feed-view-card-time::before {
+	content: "·";
+	margin-right: 6px;
+}
+
 /* ⋯ and Reply are hidden at rest and shown on hover (R11, R12). */
 .feed-view .feed-view-more,
 .feed-view .feed-view-reply-button {
