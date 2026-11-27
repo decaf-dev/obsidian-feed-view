@@ -29,8 +29,11 @@
 	height: 70vh;
 }
 
+/* The bar stays fixed at the top; only the list below it scrolls. */
 .feed-view {
 	position: relative;
+	display: flex;
+	flex-direction: column;
 	height: 100%;
 	color: var(--text-normal);
 }
@@ -38,8 +41,9 @@
 /* Replaces the virtual list's default container / viewport / content / items styles. */
 .feed-view-list {
 	position: relative;
+	flex: 1 1 auto;
+	min-height: 0;
 	width: 100%;
-	height: 100%;
 	overflow: hidden;
 }
 
@@ -98,7 +102,9 @@
 }
 
 .feed-view-bar-row {
+	flex: none;
 	padding-top: 20px;
+	padding-bottom: 5px;
 }
 
 .feed-view-footer {

@@ -54,7 +54,7 @@ Open a Base, click the layout name in the Base toolbar (for example **Table**), 
 
 ### The feed bar
 
-The bar above the first card holds the feed's own controls:
+The bar at the top of the feed holds the feed's own controls. It stays in place while the cards scroll beneath it:
 
 | Control | What it does |
 | --- | --- |
