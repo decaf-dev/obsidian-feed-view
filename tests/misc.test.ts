@@ -10,6 +10,7 @@ import {
 } from "../src/model/folds";
 import { countBodyLines, hiddenLinesLabel } from "../src/model/lines";
 import { nextUntitledName } from "../src/model/untitled";
+import { DEFAULT_VIEW_SETTINGS, parseViewSettings, serializeViewSettings } from "../src/model/viewSettings";
 
 describe("nextUntitledName", () => {
 	test("Untitled in an empty folder", () => {
@@ -87,5 +88,22 @@ describe("folds", () => {
 		expect([...deserializeFolds(["a.md", 3, "", null, "b.md"])]).toEqual(["a.md", "b.md"]);
 		expect(deserializeFolds("nope").size).toBe(0);
 		expect(deserializeFolds(null).size).toBe(0);
+	});
+});
+
+describe("view settings", () => {
+	test("defaults for missing or malformed storage", () => {
+		expect(parseViewSettings(null)).toEqual(DEFAULT_VIEW_SETTINGS);
+		expect(parseViewSettings("live")).toEqual(DEFAULT_VIEW_SETTINGS);
+		expect(parseViewSettings({ mode: "edit" })).toEqual(DEFAULT_VIEW_SETTINGS);
+	});
+
+	test("round-trips stored settings", () => {
+		const settings = { mode: "reading" as const };
+		expect(parseViewSettings(serializeViewSettings(settings))).toEqual(settings);
+	});
+
+	test("removes the entry when everything is the default", () => {
+		expect(serializeViewSettings(DEFAULT_VIEW_SETTINGS)).toBeNull();
 	});
 });

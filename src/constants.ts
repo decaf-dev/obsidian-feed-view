@@ -4,10 +4,6 @@ export const FEED_VIEW_TYPE = "feed-view";
 /** The frontmatter key a reply note uses to point at its thread's top note. */
 export const REPLY_KEY = "reply";
 
-/** Keys this view stores in its entry of the .base file. */
-export const CONFIG_MODE = "feedMode";
-export const CONFIG_DATE_PROPERTY = "dateProperty";
-
 export type FeedMode = "live" | "reading";
 
 export const DEFAULT_MODE: FeedMode = "live";

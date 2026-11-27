@@ -1,7 +1,11 @@
 import { PluginSettingTab, type SettingDefinitionItem } from "obsidian";
 import type FeedViewPlugin from "./main";
 
-/** Plugin-wide settings, stored in the plugin's data.json. */
+/**
+ * Plugin-wide settings, stored in the plugin's data.json. Anything that
+ * differs per Base or per view belongs in local storage instead
+ * (src/obsidian/settingsStore.ts), never in the .base file.
+ */
 export interface FeedViewSettings {
 	/** Span the full width of the view instead of the readable line length. */
 	fullWidth: boolean;

@@ -13,17 +13,14 @@ import {
 } from "obsidian";
 import { mount, unmount } from "svelte";
 import {
-	CONFIG_DATE_PROPERTY,
-	CONFIG_MODE,
-	DEFAULT_MODE,
 	FEED_VIEW_TYPE,
 	NOT_IMPLEMENTED_MESSAGE,
-	type FeedMode,
 } from "../constants";
 import { pruneFolds, renameFold, setAllFolded, toggleFold } from "../model/folds";
 import { buildRows, cardRowKey } from "../model/rows";
 import { allCardPaths, buildThreads } from "../model/threads";
 import type { Thread } from "../model/types";
+import { DEFAULT_VIEW_SETTINGS, type ViewSettings } from "../model/viewSettings";
 import type FeedViewPlugin from "../main";
 import type { FeedViewSettings } from "../settings";
 import Feed from "../svelte/Feed.svelte";
@@ -35,6 +32,7 @@ import { LineCounter } from "./lineCounts";
 import { buildPropertyRows, setCheckbox } from "./properties";
 import { toCardNote, type CardNote } from "./records";
 import { createReply } from "./replies";
+import { SettingsStore, settingsStorageKey } from "./settingsStore";
 
 /** How often day headings are refreshed, so "Today" rolls over after midnight. */
 const HEADING_REFRESH_MS = 5 * 60 * 1000;
@@ -61,7 +59,10 @@ export class FeedBasesView extends BasesView implements HoverParent {
 	private threads: Thread<CardNote>[] = [];
 	private notes = new Map<string, CardNote>();
 	private foldStore: FoldStore | null = null;
-	private foldKey: string | null = null;
+	private settingsStore: SettingsStore | null = null;
+	private settings: ViewSettings = { ...DEFAULT_VIEW_SETTINGS };
+	/** The Base file and view name the stores were loaded for. */
+	private localKey: string | null = null;
 
 	/** A reply that was just created, to scroll to once its card is rendered. */
 	private pendingReveal: string | null = null;
@@ -85,7 +86,6 @@ export class FeedBasesView extends BasesView implements HoverParent {
 	onload() {
 		this.plugin.views.add(this);
 		this.containerEl.addClass("feed-view-container");
-		this.feed.mode = this.readMode();
 		this.applySettings(this.plugin.settings);
 
 		const bodies = new BodyController(this.app, (path) => this.app.vault.getFileByPath(path), this.feed.mode);
@@ -150,20 +150,19 @@ export class FeedBasesView extends BasesView implements HoverParent {
 		this.renderDeferred = false;
 
 		const config = this.config;
-		const mode = this.feed.liveAvailable ? this.readMode() : "reading";
+		this.ensureLocalStores();
+		const mode = this.feed.liveAvailable ? this.settings.mode : "reading";
 		if (mode !== this.feed.mode) {
 			this.feed.mode = mode;
 			this.bodies?.setMode(mode);
 		}
-		this.ensureFoldStore();
 
-		const dateProperty = config.getAsPropertyId(CONFIG_DATE_PROPERTY);
 		const hasBaseSort = config.getSort().length > 0;
 		const order = config.getOrder();
 
 		const entries = (this.data?.data ?? []).filter((entry) => entry.file.extension === "md");
 		const entryByPath = new Map<string, BasesEntry>(entries.map((entry) => [entry.file.path, entry]));
-		const notes = entries.map((entry) => toCardNote(this.app, entry.file, entry, dateProperty));
+		const notes = entries.map((entry) => toCardNote(entry.file, entry));
 		const replyIndex = this.plugin.replyIndex;
 
 		this.threads = buildThreads<CardNote>({
@@ -172,7 +171,7 @@ export class FeedBasesView extends BasesView implements HoverParent {
 			repliesOf: (rootPath) =>
 				replyIndex.repliesOf(rootPath).flatMap((path) => {
 					const file = this.app.vault.getFileByPath(path);
-					return file ? [toCardNote(this.app, file, entryByPath.get(path) ?? null, dateProperty)] : [];
+					return file ? [toCardNote(file, entryByPath.get(path) ?? null)] : [];
 				}),
 			hasBaseSort,
 		});
@@ -244,23 +243,30 @@ export class FeedBasesView extends BasesView implements HoverParent {
 		}
 	}
 
-	private readMode(): FeedMode {
-		const value = this.config?.get(CONFIG_MODE);
-		return value === "reading" || value === "live" ? value : DEFAULT_MODE;
-	}
-
 	/** Applies the plugin-wide settings; called on load and whenever they change. */
 	applySettings(settings: FeedViewSettings) {
 		this.feed.fullWidth = settings.fullWidth;
 	}
 
-	/** Loads this view's fold state; the key depends on the Base file and view name. */
-	private ensureFoldStore() {
-		const key = foldStorageKey(findBaseKey(this.app, this.containerEl), this.config.name);
-		if (key === this.foldKey) return;
-		this.foldKey = key;
-		this.foldStore = new FoldStore(this.app, key);
+	/**
+	 * Loads this view's fold state and settings from local storage. Both are
+	 * keyed by the Base file and view name, so they reload when either changes.
+	 */
+	private ensureLocalStores() {
+		const baseKey = findBaseKey(this.app, this.containerEl);
+		const viewName = this.config.name;
+		const key = `${baseKey}:${viewName}`;
+		if (key === this.localKey) return;
+		this.localKey = key;
+		this.foldStore = new FoldStore(this.app, foldStorageKey(baseKey, viewName));
 		this.feed.folded = pruneFolds(this.foldStore.load(), (path) => this.app.vault.getFileByPath(path) !== null);
+		this.settingsStore = new SettingsStore(this.app, settingsStorageKey(baseKey, viewName));
+		this.settings = this.settingsStore.load();
+	}
+
+	private updateSettings(change: Partial<ViewSettings>) {
+		this.settings = { ...this.settings, ...change };
+		this.settingsStore?.save(this.settings);
 	}
 
 	private setFolded(folded: ReadonlySet<string>) {
@@ -350,7 +356,7 @@ export class FeedBasesView extends BasesView implements HoverParent {
 			if (mode === this.feed.mode) return;
 			this.feed.mode = mode;
 			this.bodies?.setMode(mode);
-			this.config.set(CONFIG_MODE, mode);
+			this.updateSettings({ mode });
 		},
 		toggleFold: (path) => this.setFolded(toggleFold(this.feed.folded, path)),
 		toggleAll: () =>
