@@ -3,7 +3,7 @@
 	"name": "Feed View",
 	"version": "0.1.0",
 	"minAppVersion": "1.15.1",
-	"description": "Read and edit your notes as a feed in Bases.",
+	"description": "Adds a feed view to Bases.",
 	"author": "DecafDev",
 	"isDesktopOnly": false
 }
